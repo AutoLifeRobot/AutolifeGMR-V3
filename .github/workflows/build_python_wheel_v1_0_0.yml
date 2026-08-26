@@ -2,7 +2,7 @@ name: Python Wheel Package
 
 on:
   push:
-    branches: ["gmr_assets"]
+    branches: ["autolife"]
 
 jobs:
   build-for-x64:
