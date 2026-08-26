@@ -1,0 +1,480 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="robot_v2_2">
+  <compiler angle="radian" meshdir="meshes" autolimits="true" />
+  <option gravity="0 0 -9.81" timestep="0.002" />
+  <asset>
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_base_link_STL" file="DH116/DH116-L000-A1/meshes/base_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger11_link_STL" file="DH116/DH116-L000-A1/meshes/finger11_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger12_link_STL" file="DH116/DH116-L000-A1/meshes/finger12_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger13_link_STL" file="DH116/DH116-L000-A1/meshes/finger13_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger14_link_STL" file="DH116/DH116-L000-A1/meshes/finger14_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger21_link_STL" file="DH116/DH116-L000-A1/meshes/finger21_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger22_link_STL" file="DH116/DH116-L000-A1/meshes/finger22_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger23_link_STL" file="DH116/DH116-L000-A1/meshes/finger23_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger31_link_STL" file="DH116/DH116-L000-A1/meshes/finger31_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger32_link_STL" file="DH116/DH116-L000-A1/meshes/finger32_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger33_link_STL" file="DH116/DH116-L000-A1/meshes/finger33_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger41_link_STL" file="DH116/DH116-L000-A1/meshes/finger41_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger42_link_STL" file="DH116/DH116-L000-A1/meshes/finger42_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger43_link_STL" file="DH116/DH116-L000-A1/meshes/finger43_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger51_link_STL" file="DH116/DH116-L000-A1/meshes/finger51_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger52_link_STL" file="DH116/DH116-L000-A1/meshes/finger52_link.STL" />
+    <mesh name="mesh_DH116_DH116-L000-A1_meshes_finger53_link_STL" file="DH116/DH116-L000-A1/meshes/finger53_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_base_link_STL" file="DH116/DH116-R000-A1/meshes/base_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger11_link_STL" file="DH116/DH116-R000-A1/meshes/finger11_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger12_link_STL" file="DH116/DH116-R000-A1/meshes/finger12_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger13_link_STL" file="DH116/DH116-R000-A1/meshes/finger13_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger14_link_STL" file="DH116/DH116-R000-A1/meshes/finger14_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger21_link_STL" file="DH116/DH116-R000-A1/meshes/finger21_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger22_link_STL" file="DH116/DH116-R000-A1/meshes/finger22_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger23_link_STL" file="DH116/DH116-R000-A1/meshes/finger23_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger31_link_STL" file="DH116/DH116-R000-A1/meshes/finger31_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger32_link_STL" file="DH116/DH116-R000-A1/meshes/finger32_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger33_link_STL" file="DH116/DH116-R000-A1/meshes/finger33_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger41_link_STL" file="DH116/DH116-R000-A1/meshes/finger41_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger42_link_STL" file="DH116/DH116-R000-A1/meshes/finger42_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger43_link_STL" file="DH116/DH116-R000-A1/meshes/finger43_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger51_link_STL" file="DH116/DH116-R000-A1/meshes/finger51_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger52_link_STL" file="DH116/DH116-R000-A1/meshes/finger52_link.STL" />
+    <mesh name="mesh_DH116_DH116-R000-A1_meshes_finger53_link_STL" file="DH116/DH116-R000-A1/meshes/finger53_link.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Ankle_to_Knee_STL" file="robot_v2_2/Link_Ankle_to_Knee.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Camera_Head_Back_STL" file="robot_v2_2/Link_Camera_Head_Back.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Camera_Head_Forehead_STL" file="robot_v2_2/Link_Camera_Head_Forehead.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Camera_Head_Left_Eye_STL" file="robot_v2_2/Link_Camera_Head_Left_Eye.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Camera_Head_Right_Eye_STL" file="robot_v2_2/Link_Camera_Head_Right_Eye.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Chest_Cover_STL" file="robot_v2_2/Link_Chest_Cover.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Ground_Vehicle_STL" file="robot_v2_2/Link_Ground_Vehicle.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Ground_Vehicle_Front_Cover_STL" file="robot_v2_2/Link_Ground_Vehicle_Front_Cover.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Ground_Vehicle_Top_Cover_STL" file="robot_v2_2/Link_Ground_Vehicle_Top_Cover.STL" />
+    <mesh name="mesh_robot_v2_2_Link_IMU_STL" file="robot_v2_2/Link_IMU.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Knee_to_Waist_Pitch_STL" file="robot_v2_2/Link_Knee_to_Waist_Pitch.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Left_Elbow_to_Forearm_STL" file="robot_v2_2/Link_Left_Elbow_to_Forearm.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Left_Forearm_to_Wrist_Upper_STL" file="robot_v2_2/Link_Left_Forearm_to_Wrist_Upper.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Left_Shoulder_Inner_to_Shoulder_Outer_STL" file="robot_v2_2/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Left_Shoulder_Outer_to_UpperArm_STL" file="robot_v2_2/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Left_UpperArm_to_Elbow_STL" file="robot_v2_2/Link_Left_UpperArm_to_Elbow.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Left_Wrist_Upper_to_Wrist_Lower_STL" file="robot_v2_2/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Lidar_3D_Left_STL" file="robot_v2_2/Link_Lidar_3D_Left.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Lidar_3D_Right_STL" file="robot_v2_2/Link_Lidar_3D_Right.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Lidar_Back_STL" file="robot_v2_2/Link_Lidar_Back.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Lidar_Front_STL" file="robot_v2_2/Link_Lidar_Front.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Neck_Pitch_to_Neck_Yaw_STL" file="robot_v2_2/Link_Neck_Pitch_to_Neck_Yaw.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Neck_Roll_to_Neck_Pitch_STL" file="robot_v2_2/Link_Neck_Roll_to_Neck_Pitch.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Neck_Yaw_to_Head_STL" file="robot_v2_2/Link_Neck_Yaw_to_Head.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Right_Elbow_to_Forearm_STL" file="robot_v2_2/Link_Right_Elbow_to_Forearm.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Right_Forearm_to_Wrist_Upper_STL" file="robot_v2_2/Link_Right_Forearm_to_Wrist_Upper.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Right_Shoulder_Inner_to_Shoulder_Outer_STL" file="robot_v2_2/Link_Right_Shoulder_Inner_to_Shoulder_Outer.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Right_Shoulder_Outer_to_UpperArm_STL" file="robot_v2_2/Link_Right_Shoulder_Outer_to_UpperArm.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Right_UpperArm_to_Elbow_STL" file="robot_v2_2/Link_Right_UpperArm_to_Elbow.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Right_Wrist_Upper_to_Wrist_Lower_STL" file="robot_v2_2/Link_Right_Wrist_Upper_to_Wrist_Lower.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Waist_Pitch_to_Waist_Yaw_STL" file="robot_v2_2/Link_Waist_Pitch_to_Waist_Yaw.STL" />
+    <mesh name="mesh_robot_v2_2_Link_Waist_Yaw_to_Shoulder_Inner_STL" file="robot_v2_2/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
+  </asset>
+  <worldbody>
+    <body name="Link_Ground_Vehicle_X">
+      <body name="Link_Ground_Vehicle_Y" pos="0 0 0" quat="1 0 0 0">
+        <inertial pos="0 0 0" mass="0.001" diaginertia="1e-6 1e-6 1e-6" />
+        <joint name="Joint_Ground_Vehicle_X" type="slide" axis="1 0 0" range="-10 10" />
+        <body name="Link_Ground_Vehicle_Z" pos="0 0 0" quat="1 0 0 0">
+          <inertial pos="0 0 0" mass="0.001" diaginertia="1e-6 1e-6 1e-6" />
+          <joint name="Joint_Ground_Vehicle_Y" type="slide" axis="0 1 0" range="-10 10" />
+          <body name="Link_Zero_Point" pos="0 0 0" quat="1 0 0 0">
+            <inertial pos="0 0 0" mass="0.001" diaginertia="1e-6 1e-6 1e-6" />
+            <joint name="Joint_Ground_Vehicle_Z" type="hinge" axis="0 0 1" range="-3.145 3.145" />
+            <body name="Link_Ground_Vehicle" pos="0 -0.06845 0.2863" quat="0.499998163 0.500001837 -0.5 0.5">
+              <inertial pos="-0.17159 0.0040732 -0.064736" mass="27" fullinertia="0.092816 0.054691 0.069925 -0.0003649 -2.3766e-06 -1.6874e-05" />
+              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Ground_Vehicle_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Ground_Vehicle_STL" pos="0 0 0" quat="1 0 0 0" />
+              <body name="Link_Lidar_Front" pos="-0.1185 -0.215 -0.06845" quat="-2.59734347e-06 0.70710808 -2.59735301e-06 -0.707105483">
+                <inertial pos="0.00035006 -0.00010995 -0.022043" mass="0.00396736313140061" fullinertia="7.97690975e-07 7.4492015e-07 1.53951923e-06 1.93761412e-13 3.02633326e-13 -4.49416099e-10" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_Front_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_Front_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+              <body name="Link_Lidar_Back" pos="-0.1185 0.215 -0.06845" quat="-2.59734347e-06 0.70710808 -2.59735301e-06 -0.707105483">
+                <inertial pos="0.00034994 0.00010995 -0.022043" mass="0.00396736313140057" fullinertia="7.97690975e-07 7.4492015e-07 1.53951923e-06 1.9388948e-13 -9.12553054e-14 4.49416099e-10" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_Back_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_Back_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+              <body name="Link_IMU" pos="-0.0713 0 -0.06845" quat="-2.59734347e-06 0.70710808 -2.59735301e-06 -0.707105483">
+                <inertial pos="-0.000532255721 0.00540285655 0.00652634715" mass="0.0250513530544791" fullinertia="4.72772679e-06 5.75032058e-06 9.91394695e-06 -1.65105313e-09 -5.30258375e-12 6.7583224e-09" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_IMU_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_IMU_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+              <body name="Link_Ankle_to_Knee" pos="0 0 0" quat="1 0 0 0">
+                <inertial pos="0.17268 3.8366e-05 -0.077005" mass="9.2977" fullinertia="0.031223 0.2692 0.25831 -0.00026 0.003734 -0.00029" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Ankle_to_Knee_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Ankle_to_Knee_STL" pos="0 0 0" quat="1 0 0 0" />
+                <joint name="Joint_Ankle" type="hinge" axis="0 0 -1" range="-1.48353 1.48353" />
+                <body name="Link_Knee_to_Waist_Pitch" pos="0.3495 0 0" quat="1 0 0 0">
+                  <inertial pos="0.18794 0.00527 -0.068726" mass="2.26667" fullinertia="0.017697 0.052164 0.038188 0.000647 8.5e-05 6e-06" />
+                  <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Knee_to_Waist_Pitch_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                  <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Knee_to_Waist_Pitch_STL" pos="0 0 0" quat="1 0 0 0" />
+                  <joint name="Joint_Knee" type="hinge" axis="0 0 1" range="-2.70526 2.70526" />
+                  <body name="Link_Waist_Pitch_to_Waist_Yaw" pos="0.3705 0 -0.0006" quat="1 0 0 0">
+                    <inertial pos="0.0054658 -0.00017152 -0.058569" mass="3.04338" fullinertia="0.007507 0.008016 0.004875 3.93e-06 -0.00012 2.69e-06" />
+                    <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Waist_Pitch_to_Waist_Yaw_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                    <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Waist_Pitch_to_Waist_Yaw_STL" pos="0 0 0" quat="1 0 0 0" />
+                    <joint name="Joint_Waist_Pitch" type="hinge" axis="0 0 -1" range="-1.39626 2.6" />
+                    <body name="Link_Waist_Yaw_to_Shoulder_Inner" pos="0.06793 0 -0.0685" quat="0.499998163 0.5 -0.500001837 -0.5">
+                      <inertial pos="-0.0068831 0.00023276 -0.17923" mass="6.96536" fullinertia="0.13838 0.110648 0.054762 2.4e-05 0.001719 0.000184" />
+                      <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Waist_Yaw_to_Shoulder_Inner_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                      <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Waist_Yaw_to_Shoulder_Inner_STL" pos="0 0 0" quat="1 0 0 0" />
+                      <joint name="Joint_Waist_Yaw" type="hinge" axis="0 0 -1" range="-3.141 3.141" />
+                      <body name="Link_Left_Shoulder_Inner_to_Shoulder_Outer" pos="0 -0.14269 -0.27507" quat="0.707105483 0.70710808 0 0">
+                        <inertial pos="0.0020013 -0.00086282 0.043933" mass="0.38517" fullinertia="0.000633 0.001 0.000699 1.19e-06 1.62e-05 4.41e-06" />
+                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Shoulder_Inner_to_Shoulder_Outer_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Shoulder_Inner_to_Shoulder_Outer_STL" pos="0 0 0" quat="1 0 0 0" />
+                        <joint name="Joint_Left_Shoulder_Inner" type="hinge" axis="0 0 1" range="-2.932 2.932" />
+                        <body name="Link_Left_Shoulder_Outer_to_UpperArm" pos="0.036 0 0.081" quat="0.499998163 0.5 0.500001837 0.5">
+                          <inertial pos="0.055228 0.0026872 -0.035515" mass="1.81401" fullinertia="0.001495 0.005679 0.00585 0.000196 0.00019 -5.8e-06" />
+                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Shoulder_Outer_to_UpperArm_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Shoulder_Outer_to_UpperArm_STL" pos="0 0 0" quat="1 0 0 0" />
+                          <joint name="Joint_Left_Shoulder_Outer" type="hinge" axis="0 0 -1" range="-3.1415 0.3141" />
+                          <body name="Link_Left_UpperArm_to_Elbow" pos="0.12925 0.0044999 -0.036" quat="-3.89602236e-06 0.707106781 1.29867412e-06 0.707106781">
+                            <inertial pos="0.010425 0.0018897 0.14817" mass="1.16454" fullinertia="0.005555 0.005834 0.001025 4.55e-05 0.000755 0.000183" />
+                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Left_UpperArm_to_Elbow_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Left_UpperArm_to_Elbow_STL" pos="0 0 0" quat="1 0 0 0" />
+                            <joint name="Joint_Left_UpperArm" type="hinge" axis="0 0 1" range="-2.915 2.915" />
+                            <body name="Link_Left_Elbow_to_Forearm" pos="0.025 0.036125 0.20735" quat="0.499949997 -0.500049997 -0.500048161 -0.499951834">
+                              <inertial pos="0.074433 -0.023657 -0.033651" mass="0.71152" fullinertia="0.000627 0.001365 0.001303 -7.9e-05 -0.00013 1.96e-05" />
+                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Elbow_to_Forearm_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Elbow_to_Forearm_STL" pos="0 0 0" quat="1 0 0 0" />
+                              <joint name="Joint_Left_Elbow" type="hinge" axis="0 0 1" range="0 2.618" />
+                              <body name="Link_Left_Forearm_to_Wrist_Upper" pos="0.13094 -0.025 -0.036094" quat="0.499998163 0.5 0.500001837 0.5">
+                                <inertial pos="0.0087568 -2.1901e-07 0.025031" mass="0.17972" fullinertia="0.000152 0.000257 0.000226 3.5e-09 3.29e-05 1.77e-09" />
+                                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Forearm_to_Wrist_Upper_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Forearm_to_Wrist_Upper_STL" pos="0 0 0" quat="1 0 0 0" />
+                                <joint name="Joint_Left_Forearm" type="hinge" axis="0 0 1" range="-2.9496 2.9496" />
+                                <body name="Link_Left_Wrist_Upper_to_Wrist_Lower" pos="0.03035 0 0.05335" quat="-2.59734347e-06 -0.70710808 2.59735301e-06 -0.707105483">
+                                  <inertial pos="0.027679 0.0025321 -0.031109" mass="0.89687" fullinertia="0.000504 0.00125 0.001249 5.8e-05 -6.2e-05 9.34e-06" />
+                                  <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Wrist_Upper_to_Wrist_Lower_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                                  <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Left_Wrist_Upper_to_Wrist_Lower_STL" pos="0 0 0" quat="1 0 0 0" />
+                                  <joint name="Joint_Left_Wrist_Upper" type="hinge" axis="0 0 -1" range="-1.396 1.396" />
+                                  <body name="Link_Left_Wrist_Lower_to_Gripper" pos="0.059178 0.03035 -0.030393" quat="0.707105438 -0.707108031 0.000261999918 0.000252087932">
+                                    <inertial pos="0.075472 -9.617e-05 -0.027693" mass="0.65144" fullinertia="0.000433 0.000967 0.000813 8.4e-08 -0.00012 8.56e-08" />
+                                    <joint name="Joint_Left_Wrist_Lower" type="hinge" axis="0 0 1" range="-1.4486 1.4486" />
+                                    <body name="Left_DH116_base_link" pos="0.05 0 -0.025" quat="0.707105483 0 0.70710808 0">
+                                      <inertial pos="-0.004908 -0.0023087 0.053425" mass="0.11674" fullinertia="8.8343e-05 5.7065e-05 4.4559e-05 -1.5779e-07 2.7103e-06 4.0956e-07" />
+                                      <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_base_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                      <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_base_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                      <body name="Left_DH116_finger11_link" pos="0.018 -0.021464 0.040041" quat="0.999048232 0.0436191563 0 0">
+                                        <inertial pos="0.0078225 -0.0020462 0.00068777" mass="0.010254" fullinertia="7.2141e-07 1.1141e-06 1.144e-06 1.1025e-07 1.8578e-07 -4.8596e-08" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger11_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger11_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Left_DH116_finger11" type="hinge" axis="0 0 1" range="0 1.047198" />
+                                        <body name="Left_DH116_finger12_link" pos="0.018876 -0.0049375 -0.0023593" quat="0.88168791 0.0584300869 0.454258404 -0.113409242">
+                                          <inertial pos="0.001442 5.4239e-07 0.024371" mass="0.010117" fullinertia="2.4721e-06 2.2849e-06 8.8673e-07 3.5819e-11 -8.7771e-08 1.0447e-12" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger12_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger12_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Left_DH116_finger12" type="hinge" axis="0 -1 0" range="0 0.523599" />
+                                          <body name="Left_DH116_finger13_link" pos="0 0 0.045" quat="1 0 0 0">
+                                            <inertial pos="0.0064864 1.9023e-06 0.014709" mass="0.020548" fullinertia="2.4642e-06 2.3554e-06 8.7678e-07 -1.8605e-10 -1.2758e-07 -2.9766e-10" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger13_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger13_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                            <joint name="Left_DH116_finger13" type="hinge" axis="0 -1 0" range="0.004592 0.594583" />
+                                            <body name="Left_DH116_finger14_link" pos="0 0 0" quat="1 0 0 0">
+                                              <inertial pos="0.0030983 6.4415e-07 0.024752" mass="0.00063385" fullinertia="4.5297e-08 3.0365e-08 3.2628e-08 -1.7549e-11 -6.8692e-09 3.6154e-12" />
+                                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger14_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger14_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                            </body>
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Left_DH116_finger21_link" pos="-0.011581 -0.031971 0.10003" quat="0.998243121 0.0261398687 0.0531548722 0.00139190963">
+                                        <inertial pos="-0.0017977 4.517e-07 0.018685" mass="0.0067138" fullinertia="1.195e-06 1.0687e-06 3.7302e-07 4.4817e-12 -4.5105e-09 1.3869e-11" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger21_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger21_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Left_DH116_finger21" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Left_DH116_finger22_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.001934 -4.4573e-07 0.02175" mass="0.014791" fullinertia="1.4669e-06 1.4892e-06 3.5283e-07 -1.8909e-11 -1.6607e-07 5.6761e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger22_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger22_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Left_DH116_finger22" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Left_DH116_finger23_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0027522 -5.9223e-07 0.027469" mass="0.00081811" fullinertia="1.0639e-07 9.4373e-08 2.3583e-08 -3.5393e-13 -9.0804e-09 7.1781e-12" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger23_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger23_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Left_DH116_finger31_link" pos="-0.013501 -0.0105 0.10286" quat="0.998696211 0 0.0510478032 0">
+                                        <inertial pos="-0.0017977 3.6375e-07 0.018685" mass="0.0067137" fullinertia="1.195e-06 1.0687e-06 3.7302e-07 7.1207e-12 -4.5072e-09 1.6816e-11" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger31_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger31_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Left_DH116_finger31" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Left_DH116_finger32_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.0021235 -2.8524e-07 0.024937" mass="0.017437" fullinertia="4.1693e-06 4.1909e-06 4.4314e-07 -2.5515e-11 -2.6509e-07 9.5471e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger32_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger32_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Left_DH116_finger32" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Left_DH116_finger33_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="7.153e-07 -0.0067137 -0.037473" mass="0.00081807" fullinertia="9.4367e-08 1.0642e-07 2.3554e-08 7.2819e-13 7.4794e-12 -8.9658e-09" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger33_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger33_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Left_DH116_finger41_link" pos="-0.015081 0.010971 0.10183" quat="0.997150238 -0.0261113865 0.070754254 -0.00185286153">
+                                        <inertial pos="-0.0017978 4.6307e-07 0.018685" mass="0.0067137" fullinertia="1.195e-06 1.0687e-06 3.7301e-07 -3.5541e-12 -4.505e-09 6.8595e-13" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger41_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger41_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Left_DH116_finger41" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Left_DH116_finger42_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.00099518 -3.8607e-07 0.021813" mass="0.014791" fullinertia="1.4505e-06 1.4892e-06 3.692e-07 -2.9273e-11 -2.1339e-07 6.1801e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger42_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger42_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Left_DH116_finger42" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Left_DH116_finger43_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0039329 -6.1523e-07 0.027325" mass="0.00081812" fullinertia="1.0545e-07 9.4369e-08 2.452e-08 -2.6832e-13 -1.261e-08 6.0613e-12" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger43_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger43_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Left_DH116_finger51_link" pos="-0.013081 0.032156 0.097798" quat="0.998546357 -0.0392329543 0.0369302506 -0.00145097104">
+                                        <inertial pos="-0.0017977 3.5129e-07 0.018685" mass="0.0067139" fullinertia="1.195e-06 1.0687e-06 3.7302e-07 2.1372e-12 -4.5117e-09 5.8565e-12" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger51_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger51_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Left_DH116_finger51" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Left_DH116_finger52_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.0024418 -8.1825e-07 0.016654" mass="0.010439" fullinertia="1.3354e-06 1.3473e-06 2.4653e-07 -3.1558e-11 -1.1834e-07 7.0815e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger52_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger52_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Left_DH116_finger52" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Left_DH116_finger53_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0021844 1.1224e-06 0.022782" mass="0.00058044" fullinertia="4.4456e-08 3.5896e-08 1.5583e-08 1.8383e-12 -3.5021e-09 -1.5936e-12" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger53_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-L000-A1_meshes_finger53_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                    </body>
+                                  </body>
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                      <body name="Link_Right_Shoulder_Inner_to_Shoulder_Outer" pos="0 0.1426 -0.27507" quat="0.707105483 -0.70710808 0 0">
+                        <inertial pos="0.0020083 0.00084722 0.043929" mass="0.38513" fullinertia="0.000633 0.001 0.000699 -1.1e-06 1.62e-05 -4e-06" />
+                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Shoulder_Inner_to_Shoulder_Outer_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Shoulder_Inner_to_Shoulder_Outer_STL" pos="0 0 0" quat="1 0 0 0" />
+                        <joint name="Joint_Right_Shoulder_Inner" type="hinge" axis="0 0 1" range="-2.932 2.932" />
+                        <body name="Link_Right_Shoulder_Outer_to_UpperArm" pos="0.036 0 0.081" quat="0.499998163 -0.5 0.500001837 -0.5">
+                          <inertial pos="0.055229 -0.0026942 -0.035513" mass="1.81394" fullinertia="0.001495 0.005679 0.00585 -0.0002 0.00019 5.89e-06" />
+                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Shoulder_Outer_to_UpperArm_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Shoulder_Outer_to_UpperArm_STL" pos="0 0 0" quat="1 0 0 0" />
+                          <joint name="Joint_Right_Shoulder_Outer" type="hinge" axis="0 0 -1" range="-0.3141 3.1415" />
+                          <body name="Link_Right_UpperArm_to_Elbow" pos="0.12925 -0.0045 -0.036" quat="-3.89602236e-06 0.707106781 1.29867412e-06 0.707106781">
+                            <inertial pos="0.010425 -0.0018943 0.14817" mass="1.16452" fullinertia="0.005555 0.005834 0.001025 -4.6e-05 0.000755 -0.00018" />
+                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Right_UpperArm_to_Elbow_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Right_UpperArm_to_Elbow_STL" pos="0 0 0" quat="1 0 0 0" />
+                            <joint name="Joint_Right_UpperArm" type="hinge" axis="0 0 1" range="-2.915 2.915" />
+                            <body name="Link_Right_Elbow_to_Forearm" pos="0.025 -0.036125 0.20735" quat="0.499998163 0.500001837 -0.5 0.5">
+                              <inertial pos="0.07444 0.023652 -0.033684" mass="0.71152" fullinertia="0.000627 0.001365 0.001303 7.91e-05 -0.00013 -2e-05" />
+                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Elbow_to_Forearm_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Elbow_to_Forearm_STL" pos="0 0 0" quat="1 0 0 0" />
+                              <joint name="Joint_Right_Elbow" type="hinge" axis="0 0 1" range="-2.618 0" />
+                              <body name="Link_Right_Forearm_to_Wrist_Upper" pos="0.13095 0.025 -0.036125" quat="0.499998163 -0.5 0.500001837 -0.5">
+                                <inertial pos="0.0087568 -2.1884e-07 0.025031" mass="0.17972" fullinertia="0.000152 0.000257 0.000226 3.5e-09 3.29e-05 1.77e-09" />
+                                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Forearm_to_Wrist_Upper_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Forearm_to_Wrist_Upper_STL" pos="0 0 0" quat="1 0 0 0" />
+                                <joint name="Joint_Right_Forearm" type="hinge" axis="0 0 1" range="-2.9496 2.9496" />
+                                <body name="Link_Right_Wrist_Upper_to_Wrist_Lower" pos="0.03035 0 0.05335" quat="-2.59734347e-06 0.70710808 2.59735301e-06 0.707105483">
+                                  <inertial pos="0.027702 0.002532 -0.031165" mass="0.89687" fullinertia="0.000504 0.00125 0.001249 5.8e-05 -6.2e-05 9.34e-06" />
+                                  <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Wrist_Upper_to_Wrist_Lower_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                                  <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Right_Wrist_Upper_to_Wrist_Lower_STL" pos="0 0 0" quat="1 0 0 0" />
+                                  <joint name="Joint_Right_Wrist_Upper" type="hinge" axis="0 0 -1" range="-1.396 1.396" />
+                                  <body name="Link_Right_Wrist_Lower_to_Gripper" pos="0.0592 0.03035 -0.03035" quat="0.707105483 -0.70710808 0 0">
+                                    <inertial pos="0.075472 -4.128e-05 -0.027694" mass="0.65144" fullinertia="0.000433 0.000967 0.000813 8.4e-09 -0.00012 8.56e-08" />
+                                    <joint name="Joint_Right_Wrist_Lower" type="hinge" axis="0 0 1" range="-1.4486 1.4486" />
+                                    <body name="Right_DH116_base_link" pos="0.05 0 -0.025" quat="0.000563086983 0.707107856 -0.000563089051 0.707105258">
+                                      <inertial pos="-0.0052741 0.002479 0.057207" mass="0.10866" fullinertia="8.6558e-05 5.5287e-05 4.1066e-05 1.592e-07 2.7057e-06 -4.058e-07" />
+                                      <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_base_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                      <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_base_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                      <body name="Right_DH116_finger11_link" pos="0.018 0.021747 0.043279" quat="0.999048232 -0.0436191563 0 0">
+                                        <inertial pos="0.0078225 0.0020462 -0.0025622" mass="0.010254" fullinertia="7.2142e-07 1.1141e-06 1.144e-06 -1.1025e-07 1.8578e-07 4.8596e-08" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger11_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger11_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Right_DH116_finger11" type="hinge" axis="0 0 -1" range="0 1.047198" />
+                                        <body name="Right_DH116_finger12_link" pos="0.018876 0.0049375 -0.0056093" quat="0.88168791 -0.0584300869 0.454258404 0.113409242">
+                                          <inertial pos="0.0014182 -1.2893e-06 0.024329" mass="0.010145" fullinertia="2.4795e-06 2.2943e-06 8.8906e-07 2.3633e-11 -9.1895e-08 4.4162e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger12_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger12_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Right_DH116_finger12" type="hinge" axis="0 -1 0" range="0 0.523599" />
+                                          <body name="Right_DH116_finger13_link" pos="0 0 0.045" quat="1 0 0 0">
+                                            <inertial pos="0.0064864 -1.72e-06 0.014709" mass="0.020548" fullinertia="2.4642e-06 2.3555e-06 8.7678e-07 2.2654e-10 -1.276e-07 3.4328e-10" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger13_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger13_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                            <joint name="Right_DH116_finger13" type="hinge" axis="0 -1 0" range="0.004592 0.594583" />
+                                            <body name="Right_DH116_finger14_link" pos="0 0 0" quat="1 0 0 0">
+                                              <inertial pos="0.0030983 8.624e-07 0.024752" mass="0.00064654" fullinertia="4.6206e-08 3.0972e-08 3.328e-08 -1.7511e-11 -7.0078e-09 3.3703e-12" />
+                                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger14_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger14_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                            </body>
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Right_DH116_finger21_link" pos="-0.011581 0.031971 0.10003" quat="0.998243121 -0.0261398687 0.0531548722 -0.00139190963">
+                                        <inertial pos="-0.0017978 3.2789e-07 0.018686" mass="0.0067143" fullinertia="1.1951e-06 1.0688e-06 3.7304e-07 6.7451e-12 -4.4967e-09 -2.4168e-12" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger21_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger21_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Right_DH116_finger21" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Right_DH116_finger22_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.0019337 7.2998e-07 0.02175" mass="0.014789" fullinertia="1.4665e-06 1.4889e-06 3.5281e-07 1.1416e-11 -1.6584e-07 -9.2753e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger22_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger22_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Right_DH116_finger22" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Right_DH116_finger23_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0027534 -5.1038e-07 0.027456" mass="0.00083419" fullinertia="1.0852e-07 9.6252e-08 2.404e-08 -2.4081e-13 -9.2843e-09 -2.9524e-12" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger23_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger23_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Right_DH116_finger31_link" pos="-0.013501 0.0105 0.10286" quat="0.998696211 0 0.0510478032 0">
+                                        <inertial pos="-0.0017978 3.3269e-07 0.018686" mass="0.0067141" fullinertia="1.1951e-06 1.0688e-06 3.7303e-07 1.1431e-11 -4.4917e-09 8.2241e-12" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger31_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger31_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Right_DH116_finger31" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Right_DH116_finger32_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.0021242 6.6141e-08 0.024943" mass="0.017444" fullinertia="4.1711e-06 4.1927e-06 4.4322e-07 1.8194e-11 -2.6488e-07 -1.6389e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger32_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger32_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Right_DH116_finger32" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Right_DH116_finger33_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0025776 -4.8031e-07 0.03447" mass="0.00083416" fullinertia="1.0861e-07 9.6246e-08 2.3939e-08 1.3942e-12 -8.8309e-09 -5.9916e-13" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger33_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger33_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Right_DH116_finger41_link" pos="-0.015081 -0.010971 0.10183" quat="0.997150238 0.0261113865 0.070754254 0.00185286153">
+                                        <inertial pos="-0.0017978 2.8835e-07 0.018686" mass="0.006714" fullinertia="1.1951e-06 1.0688e-06 3.7303e-07 1.5194e-11 -4.4902e-09 1.057e-11" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger41_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger41_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Right_DH116_finger41" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Right_DH116_finger42_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.00099481 6.0006e-07 0.021813" mass="0.014788" fullinertia="1.4501e-06 1.4888e-06 3.6915e-07 2.324e-11 -2.1315e-07 -8.582e-11" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger42_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger42_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Right_DH116_finger42" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Right_DH116_finger43_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0039336 -3.2576e-07 0.027311" mass="0.0008342" fullinertia="1.0756e-07 9.6251e-08 2.4997e-08 5.2726e-13 -1.2886e-08 -6.5627e-13" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger43_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger43_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                      <body name="Right_DH116_finger51_link" pos="-0.013081 -0.032156 0.097798" quat="0.998546357 0.0392329543 0.0369302506 0.00145097104">
+                                        <inertial pos="-0.0017978 4.0336e-07 0.018686" mass="0.0067142" fullinertia="1.1951e-06 1.0688e-06 3.7303e-07 9.6674e-12 -4.4947e-09 3.902e-12" />
+                                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger51_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger51_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                        <joint name="Right_DH116_finger51" type="hinge" axis="0 1 0" range="0 1.396263" />
+                                        <body name="Right_DH116_finger52_link" pos="0 0 0.035" quat="1 0 0 0">
+                                          <inertial pos="-0.0024432 3.1795e-07 0.016659" mass="0.010445" fullinertia="1.336e-06 1.3478e-06 2.4659e-07 2.6011e-11 -1.1818e-07 -5.5233e-12" />
+                                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger52_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger52_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          <joint name="Right_DH116_finger52" type="hinge" axis="0 1 0" range="0.011072 1.687426" />
+                                          <body name="Right_DH116_finger53_link" pos="0 0 0" quat="1 0 0 0">
+                                            <inertial pos="0.0021833 1.5926e-06 0.02278" mass="0.00059177" fullinertia="4.5328e-08 3.6598e-08 1.5894e-08 2.1034e-12 -3.5665e-09 -2.539e-12" />
+                                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger53_link_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.2 0.2 0.2 1" />
+                                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_DH116_DH116-R000-A1_meshes_finger53_link_STL" pos="0 0 0" quat="1 0 0 0" />
+                                          </body>
+                                        </body>
+                                      </body>
+                                    </body>
+                                  </body>
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                      <body name="Link_Neck_Roll_to_Neck_Pitch" pos="-0.045134 0.00013407 -0.3851" quat="3.27579306e-05 0.707105482 3.2758051e-05 -0.707108079">
+                        <inertial pos="-2.6629e-05 -0.0020463 -0.035504" mass="0.37698" fullinertia="0.000182 0.000153 0.000176 4.4e-07 1.93e-07 5.8e-08" />
+                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Neck_Roll_to_Neck_Pitch_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Neck_Roll_to_Neck_Pitch_STL" pos="0 0 0" quat="1 0 0 0" />
+                        <joint name="Joint_Neck_Roll" type="hinge" axis="0 0 1" range="-0.349066 0.349066" />
+                        <body name="Link_Neck_Pitch_to_Neck_Yaw" pos="0 0.0265 -0.0362" quat="0.707105483 -0.70710808 0 0">
+                          <inertial pos="0.030982 6.3131e-05 -0.029796" mass="0.07737" fullinertia="5.12e-05 7.21e-05 3.69e-05 3.4e-08 4.94e-06 4.14e-08" />
+                          <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Neck_Pitch_to_Neck_Yaw_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                          <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Neck_Pitch_to_Neck_Yaw_STL" pos="0 0 0" quat="1 0 0 0" />
+                          <joint name="Joint_Neck_Pitch" type="hinge" axis="0 0 -1" range="-0.7854 0.5236" />
+                          <body name="Link_Neck_Yaw_to_Head" pos="0.0531 0 -0.0265" quat="0.500018649 -0.499979514 -0.500022322 0.499979514">
+                            <inertial pos="0.01581 0.0010581 -0.068665" mass="0.92973" fullinertia="0.003331 0.003674 0.002773 -4e-06 3.65e-05 1.4e-05" />
+                            <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Neck_Yaw_to_Head_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.79216 0.81961 0.93333 1" />
+                            <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Neck_Yaw_to_Head_STL" pos="0 0 0" quat="1 0 0 0" />
+                            <joint name="Joint_Neck_Yaw" type="hinge" axis="0 0 -1" range="-1.0472 1.0472" />
+                            <body name="Link_Camera_Head_Back" pos="-0.082802 0.0018882 -0.081409" quat="3.27579306e-05 0.707105482 3.2758051e-05 -0.707108079">
+                              <inertial pos="0.000212265117 1.21290686e-10 -0.013762954" mass="0.00611903963030372" fullinertia="5.91848269e-07 6.09803902e-07 6.62777333e-07 5.18400453e-13 1.33425297e-08 -3.02641552e-15" />
+                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Back_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Back_STL" pos="0 0 0" quat="1 0 0 0" />
+                            </body>
+                            <body name="Link_Camera_Head_Right_Eye" pos="0.084412 0.03345 -0.070721" quat="0.737287424 -2.5728423e-05 0.675579198 3.23262665e-05">
+                              <inertial pos="-0.00018779193 1.00807458e-07 -0.0151485551" mass="0.00701699739766512" fullinertia="8.02374913e-07 8.20799958e-07 6.97603344e-07 -1.58984467e-12 -1.66816845e-08 -8.4876212e-12" />
+                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Right_Eye_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Right_Eye_STL" pos="0 0 0" quat="1 0 0 0" />
+                            </body>
+                            <body name="Link_Camera_Head_Left_Eye" pos="0.084417 -0.029536 -0.070721" quat="0.737287424 -2.5728423e-05 0.675579198 3.23262665e-05">
+                              <inertial pos="-0.00018779193 1.00807454e-07 -0.0151485551" mass="0.00701699739766513" fullinertia="8.02374913e-07 8.20799958e-07 6.97603344e-07 -1.58984508e-12 -1.66816845e-08 -8.48762157e-12" />
+                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Left_Eye_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Left_Eye_STL" pos="0 0 0" quat="1 0 0 0" />
+                            </body>
+                            <body name="Link_Camera_Head_Forehead" pos="0.083075 0.0019568 -0.10564" quat="0.829044252 -2.2905254e-05 0.559183 3.39593107e-05">
+                              <inertial pos="-2.78783714e-05 -0.00111290057 -0.0125212356" mass="0.0456887615442191" fullinertia="2.78342079e-05 4.13606142e-06 2.7548675e-05 1.40788988e-09 7.44199819e-09 -4.09805797e-07" />
+                              <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Forehead_STL" pos="0 0 0" quat="1 0 0 0" rgba="1 1 1 1" />
+                              <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Camera_Head_Forehead_STL" pos="0 0 0" quat="1 0 0 0" />
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                      <body name="Link_Chest_Cover" pos="0 0 0" quat="1 0 0 0">
+                        <inertial pos="0.0590193552 0.000431855863 -0.174102816" mass="0.512164662878105" fullinertia="0.0117220245 0.00726524053 0.00536095566 -2.53257131e-06 -9.66196638e-05 -2.36752069e-05" />
+                        <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Chest_Cover_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.698039216 0.658823529 0.819607843 1" />
+                        <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Chest_Cover_STL" pos="0 0 0" quat="1 0 0 0" />
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+              <body name="Link_Lidar_3D_Right" pos="-0.096299 -0.18619 0.0482" quat="0.445966717 -0.445968355 0.548738611 -0.548736595">
+                <inertial pos="-0.000145687105 -1.34134507e-05 0.0276322149" mass="0.150126628057647" fullinertia="4.50523961e-05 4.47907569e-05 6.15256659e-05 -2.67427236e-08 1.02831707e-07 -3.57975565e-08" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_3D_Right_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.792156863 0.819607843 0.933333333 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_3D_Right_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+              <body name="Link_Lidar_3D_Left" pos="-0.096299 -0.18619 -0.1858" quat="0.445966717 -0.445968355 0.548738611 -0.548736595">
+                <inertial pos="-0.000145688097 -1.34135946e-05 0.0276322144" mass="0.150126632959695" fullinertia="4.50523962e-05 4.47907571e-05 6.15256658e-05 -2.67427057e-08 1.02831688e-07 -3.57975187e-08" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_3D_Left_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.792156863 0.819607843 0.933333333 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Lidar_3D_Left_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+              <body name="Link_Ground_Vehicle_Front_Cover" pos="0 0 0" quat="1 0 0 0">
+                <inertial pos="-0.0712789236 -0.0181368713 -0.0689650028" mass="0.553474455435656" fullinertia="0.0225108161 0.0118260028 0.0115935639 -0.000359332409 -5.3619493e-06 -2.92643018e-05" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Ground_Vehicle_Front_Cover_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.749019608 0.749019608 0.749019608 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Ground_Vehicle_Front_Cover_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+              <body name="Link_Ground_Vehicle_Top_Cover" pos="0 0 0" quat="1 0 0 0">
+                <inertial pos="-0.0339091381 -0.086012831 -0.0687269236" mass="0.280414900851831" fullinertia="0.00273535521 0.00182757492 0.00155924569 -0.00031394052 -5.27251083e-06 -4.67031696e-07" />
+                <geom contype="0" conaffinity="0" type="mesh" mesh="mesh_robot_v2_2_Link_Ground_Vehicle_Top_Cover_STL" pos="0 0 0" quat="1 0 0 0" rgba="0.250980392 0.250980392 0.250980392 1" />
+                <geom contype="1" conaffinity="1" type="mesh" mesh="mesh_robot_v2_2_Link_Ground_Vehicle_Top_Cover_STL" pos="0 0 0" quat="1 0 0 0" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <equality>
+    <joint name="eq_Left_DH116_finger13" joint1="Left_DH116_finger13" joint2="Left_DH116_finger12" polycoef="0.004592 0.8808 0 0 0" />
+    <joint name="eq_Left_DH116_finger22" joint1="Left_DH116_finger22" joint2="Left_DH116_finger21" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Left_DH116_finger32" joint1="Left_DH116_finger32" joint2="Left_DH116_finger31" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Left_DH116_finger42" joint1="Left_DH116_finger42" joint2="Left_DH116_finger41" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Left_DH116_finger52" joint1="Left_DH116_finger52" joint2="Left_DH116_finger51" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Right_DH116_finger13" joint1="Right_DH116_finger13" joint2="Right_DH116_finger12" polycoef="0.004592 0.8808 0 0 0" />
+    <joint name="eq_Right_DH116_finger22" joint1="Right_DH116_finger22" joint2="Right_DH116_finger21" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Right_DH116_finger32" joint1="Right_DH116_finger32" joint2="Right_DH116_finger31" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Right_DH116_finger42" joint1="Right_DH116_finger42" joint2="Right_DH116_finger41" polycoef="0.011072 0.9206 0 0 0" />
+    <joint name="eq_Right_DH116_finger52" joint1="Right_DH116_finger52" joint2="Right_DH116_finger51" polycoef="0.011072 0.9206 0 0 0" />
+  </equality>
+</mujoco>

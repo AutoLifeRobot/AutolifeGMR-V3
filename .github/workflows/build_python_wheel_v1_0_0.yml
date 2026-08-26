@@ -1,0 +1,69 @@
+name: Python Wheel Package
+
+on:
+  push:
+    branches: ["autolife"]
+
+jobs:
+  build-for-x64:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup conda
+        shell: bash -l {0}
+        run: |
+          if [ ! -f "$HOME/miniconda3/bin/conda" ]; then
+            echo "Miniconda not found, installing..."
+            # Install Miniconda
+            mkdir -p ~/miniconda3
+            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+            bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+            rm ~/miniconda3/miniconda.sh
+            ~/miniconda3/bin/conda init bash
+            ~/miniconda3/bin/conda config --set auto_activate false
+            source ~/.bashrc
+          else
+            echo "Miniconda already installed."
+          fi
+          # Add miniconda3/bin to the GITHUB_PATH for subsequent steps in this job
+          echo "$HOME/miniconda3/bin" >> $GITHUB_PATH
+
+      - name: Setup ros2 build environment
+        shell: bash -l {0}
+        run: |
+          source ~/miniconda3/etc/profile.d/conda.sh
+          conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+          conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+          conda update conda -n base -y
+          conda config --env --add channels conda-forge
+
+          conda remove -n ros2_build --all -y
+          conda create -n ros2_build conda-forge::python=3.12.* -y
+          conda activate ros2_build
+          python -m pip install --upgrade pip setuptools packaging wheel mypy Cython
+
+          python --version
+          which python
+          python -c "import sys; print(sys.executable)"
+          python -c "import sysconfig; print('Include path:', sysconfig.get_path('include'))"
+
+      - name: Build wheel
+        shell: bash -l {0}
+        env:
+          # Pass the run number as an environment variable
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          set -e  # Exit immediately if any command fails
+          source ~/miniconda3/etc/profile.d/conda.sh
+          conda activate ros2_build
+          python setup.py sdist bdist_wheel
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: autolife-gmr-wheel
+          path: dist/*.whl
