@@ -1,41 +1,16 @@
-import os
-import sys
-import sysconfig
-import platform
+"""Portable GMR wheel; assets are package resources, not prefix-specific data_files."""
+from pathlib import Path
+import shutil
 from setuptools import setup, find_packages
+from setuptools.command.build_py import build_py
 
-is_windows = platform.system() == 'Windows'
-is_linux = platform.system() == 'Linux'
-is_macos = platform.system() == 'Darwin'
 
-# Set the classifiers based on the operating system
-classifiers = [
-    f"Programming Language :: Python :: {sys.version_info.major}.{sys.version_info.minor}",
-]
-if is_windows:
-    classifiers.append("Operating System :: Microsoft :: Windows")
-if is_linux:
-    classifiers.append("Operating System :: POSIX :: Linux")
-if is_macos:
-    classifiers.append("Operating System :: MacOS :: MacOS X")
+class BuildPy(build_py):
+    def run(self):
+        super().run()
+        target = Path(self.build_lib) / "general_motion_retargeting"
+        shutil.copytree("assets", target / "assets", dirs_exist_ok=True)
 
-def add_extra_data_dir(directory):
-    paths = []
-    for (path, directories, filenames) in os.walk(directory):
-        for filename in filenames:
-            folder_prefix = ''
-            if is_windows:
-                folder_prefix = f'Lib/site-packages/general_motion_retargeting'
-            elif is_linux:
-                folder_prefix = f'lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages/general_motion_retargeting'
-            elif is_macos:
-                folder_prefix = f'lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages/general_motion_retargeting'
-            else:
-                raise NotImplementedError(
-                    f"Unsupported operating system: {platform.system()}")
-            paths.append((os.path.join(folder_prefix, path),
-                         [os.path.join(path, filename)]))
-    return paths
 
 setup(
   name = 'general_motion_retargeting',
@@ -47,28 +22,17 @@ setup(
   long_description_content_type="text/markdown",
   url="https://github.com/YanjieZe/GMR",
   license="MIT",
-  version="0.2.0",
+  version="0.2.0+autolife.v3",
   install_requires=[
-    "loop_rate_limiters",
-    "mink",
-    "mujoco",
-    "numpy",
-    "scipy",
-    "qpsolvers[proxqp]",
-    "rich",
-    "tqdm",
-    "opencv-python",
-    "natsort",
-    "psutil",
-    "smplx @ git+https://github.com/vchoutas/smplx",
-    "protobuf",
-    "redis[hiredis]",
-    "imageio[ffmpeg]",
+    "loop-rate-limiters", "mink>=1.3,<2", "mujoco>=3.3,<4", "numpy", "scipy",
+    "qpsolvers[daqp]>=4,<5", "rich", "torch>=2.6,<3", "imageio", "toml",
   ],
+  extras_require={
+    "tools": ["qpsolvers[proxqp]", "tqdm", "opencv-python", "natsort", "psutil",
+              "smplx>=0.1.28", "protobuf", "redis[hiredis]", "imageio[ffmpeg]"],
+  },
   python_requires='>=3.10',
   include_package_data=True,
-  data_files=[
-      *add_extra_data_dir('assets'),
-      *add_extra_data_dir('general_motion_retargeting/ik_configs')
-  ]
+  package_data={"general_motion_retargeting": ["ik_configs/*.json"]},
+  cmdclass={"build_py": BuildPy},
 )
