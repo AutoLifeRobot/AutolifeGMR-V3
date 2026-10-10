@@ -1,0 +1,42 @@
+name: V3 model source checks
+
+on:
+  push:
+    branches: [hxx/v3-test, feat/v3-release]
+  pull_request:
+    branches: [hxx/v3-test, feat/v3-release]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v3-check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # Match Release's robot254-baseline.json. This test never creates a viewer.
+      - run: python -m pip install 'mujoco==3.11.0' 'numpy==2.3.5'
+      - name: Verify materialized assets and real model behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p test-results
+          git lfs fsck
+          python -m unittest discover -s tests -p test_v3_assets.py -v 2>&1 | tee test-results/model.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gmr-v3-source-${{ github.sha }}
+          path: test-results/
+          if-no-files-found: warn
