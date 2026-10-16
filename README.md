@@ -1,3 +1,13 @@
+> **Pending verification: `simplify/wheel-release` (2026-10-16).**
+> This branch has not been tested end to end. Full build, installation and integration
+> verification, plus further debugging, are pending until the base image is ready.
+> Existing local checks are partial evidence only; this branch is not qualified for deployment.
+
+> Current wheel/source workflow (2026-10-16): see [the repo-owned release contract](packaging/README.md).
+> Release installs wheels into an existing environment and preserves operator config/data.
+> `just dev` uses `AUTOLIFE_ROOT` from any checkout and requires an explicit service stop;
+> older automatic-stop/source-transfer instructions below are superseded.
+
 # GMR: General Motion Retargeting
 
   <a href="https://arxiv.org/abs/2505.02833">
