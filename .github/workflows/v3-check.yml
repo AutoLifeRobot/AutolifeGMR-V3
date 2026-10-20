@@ -1,50 +1,70 @@
+# Self-hosted scheduling; all dependency installation and gates run in a job-owned Docker container.
 name: V3 model source checks
-
-on:
+'on':
   push:
-    branches: [hxx/v3-test, feat/v3-release]
+    branches:
+      - hxx/v3-test
+      - feat/v3-release
   pull_request:
-    branches: [hxx/v3-test, feat/v3-release]
-
+    branches:
+      - hxx/v3-test
+      - feat/v3-release
 permissions:
   contents: read
-
 concurrency:
   group: v3-check-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   model:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on:
+      - self-hosted
+      - Linux
+      - X64
     timeout-minutes: 15
     steps:
+      - name: Prepare isolated job directories
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v docker
+          output="$(mktemp -d "$RUNNER_TEMP/autolife-ci.XXXXXX")"
+          echo "CI_OUTPUT=$output" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
         with:
-          lfs: true
+          path: ${{ env.CI_SOURCE_REL }}
+          lfs: false
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Isolate Python dependencies for this job
+      - name: Run original gates in isolated Docker
         shell: bash
-        run: |
-          set -euo pipefail
-          venv="$(mktemp -d "$RUNNER_TEMP/autolife-python.XXXXXX")"
-          python -m venv "$venv"
-          echo "$venv/bin" >> "$GITHUB_PATH"
-          echo "VIRTUAL_ENV=$venv" >> "$GITHUB_ENV"
-      # Match Release's robot254-baseline.json. This test never creates a viewer.
-      - run: python -m pip install 'mujoco==3.11.0' 'numpy==2.3.5'
-      - name: Verify materialized assets and real model behavior
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p test-results
-          git lfs fsck
-          python -m unittest discover -s tests -p test_v3_assets.py -v 2>&1 | tee test-results/model.log
+        run: bash "$GITHUB_WORKSPACE/$CI_SOURCE_REL/.github/scripts/ci-container.sh" "$CI_IMAGE" model
+        env:
+          GH_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: gmr-v3-source-${{ github.sha }}
-          path: test-results/
+          path: ${{ env.CI_OUTPUT }}/test-results/
           if-no-files-found: warn
+      - name: Preserve execution evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gmr-ci-${{ github.job }}-${{ strategy.job-index || 0 }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.CI_OUTPUT }}/ci/
+          if-no-files-found: warn
+      - name: Remove only this job checkout
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$CI_SOURCE_REL" in
+            ".ci/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_JOB}-${CI_MATRIX_INDEX}/source") rm -rf -- "$GITHUB_WORKSPACE/$CI_SOURCE_REL" ;;
+            *) echo "Refusing unexpected cleanup path" >&2; exit 1 ;;
+          esac
+    env:
+      CI_MATRIX_INDEX: ${{ strategy.job-index || 0 }}
+      CI_SOURCE_REL: .ci/${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index || 0 }}/source
+      CI_IMAGE: ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
+      CI_DOCKER_PLATFORM: linux/amd64
+      CI_PYTHON_MINOR: '3.12'
+      CI_LFS: 'true'

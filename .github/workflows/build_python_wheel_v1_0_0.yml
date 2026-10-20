@@ -1,60 +1,56 @@
+# Self-hosted scheduling; all dependency installation and gates run in a job-owned Docker container.
 name: Python Wheel Package
-
-on:
+'on':
   push:
-    branches: ["autolife"]
-
+    branches:
+      - autolife
 jobs:
   build-for-x64:
     if: github.event_name == 'push'
-    runs-on: [self-hosted, Linux, X64]
-
+    runs-on:
+      - self-hosted
+      - Linux
+      - X64
     steps:
-      - name: Require Ubuntu 24.04 x86_64 build host
+      - name: Prepare isolated job directories
         shell: bash
         run: |
           set -euo pipefail
-          . /etc/os-release
-          if [[ "$ID" != ubuntu || "$VERSION_ID" != 24.04 || "$(uname -m)" != x86_64 ]]; then
-            echo "::error::This wheel must be built on Ubuntu 24.04 x86_64; generic runner labels are insufficient."
-            exit 1
-          fi
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+          command -v docker
+          output="$(mktemp -d "$RUNNER_TEMP/autolife-ci.XXXXXX")"
+          echo "CI_OUTPUT=$output" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
         with:
-          python-version: '3.12'
-      - name: Isolate Python dependencies for this job
+          path: ${{ env.CI_SOURCE_REL }}
+          lfs: false
+          persist-credentials: false
+      - name: Run original gates in isolated Docker
         shell: bash
-        run: |
-          set -euo pipefail
-          venv="$(mktemp -d "$RUNNER_TEMP/autolife-python.XXXXXX")"
-          python -m venv "$venv"
-          echo "$venv/bin" >> "$GITHUB_PATH"
-          echo "VIRTUAL_ENV=$venv" >> "$GITHUB_ENV"
-      - name: Install wheel build dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          command -v cc
-          command -v c++
-          python -m pip install --upgrade pip setuptools packaging wheel mypy Cython
-          python --version
-          python -c "import sys; print(sys.executable)"
-          python -c "import sysconfig; print('Include path:', sysconfig.get_path('include'))"
-
-      - name: Build wheel
-        shell: bash
-        env:
-          # Pass the run number as an environment variable
-          GITHUB_RUN_NUMBER: ${{ github.run_number }}
-        run: |
-          set -e  # Exit immediately if any command fails
-          python setup.py sdist bdist_wheel
-
+        run: bash "$GITHUB_WORKSPACE/$CI_SOURCE_REL/.github/scripts/ci-container.sh" "$CI_IMAGE" wheel
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: autolife-gmr-wheel
-          path: dist/*.whl
+          path: ${{ env.CI_OUTPUT }}/dist/*.whl
+      - name: Preserve execution evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gmr-ci-${{ github.job }}-${{ strategy.job-index || 0 }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.CI_OUTPUT }}/ci/
+          if-no-files-found: warn
+      - name: Remove only this job checkout
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$CI_SOURCE_REL" in
+            ".ci/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_JOB}-${CI_MATRIX_INDEX}/source") rm -rf -- "$GITHUB_WORKSPACE/$CI_SOURCE_REL" ;;
+            *) echo "Refusing unexpected cleanup path" >&2; exit 1 ;;
+          esac
+    env:
+      CI_MATRIX_INDEX: ${{ strategy.job-index || 0 }}
+      CI_SOURCE_REL: .ci/${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index || 0 }}/source
+      CI_IMAGE: ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
+      CI_DOCKER_PLATFORM: linux/amd64
+      CI_PYTHON_MINOR: '3.12'
