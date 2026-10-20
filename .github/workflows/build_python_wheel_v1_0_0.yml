@@ -7,59 +7,50 @@ on:
 jobs:
   build-for-x64:
     if: github.event_name == 'push'
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, Linux, X64]
 
     steps:
+      - name: Require Ubuntu 24.04 x86_64 build host
+        shell: bash
+        run: |
+          set -euo pipefail
+          . /etc/os-release
+          if [[ "$ID" != ubuntu || "$VERSION_ID" != 24.04 || "$(uname -m)" != x86_64 ]]; then
+            echo "::error::This wheel must be built on Ubuntu 24.04 x86_64; generic runner labels are insufficient."
+            exit 1
+          fi
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup conda
-        shell: bash -l {0}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Isolate Python dependencies for this job
+        shell: bash
         run: |
-          if [ ! -f "$HOME/miniconda3/bin/conda" ]; then
-            echo "Miniconda not found, installing..."
-            # Install Miniconda
-            mkdir -p ~/miniconda3
-            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
-            bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-            rm ~/miniconda3/miniconda.sh
-            ~/miniconda3/bin/conda init bash
-            ~/miniconda3/bin/conda config --set auto_activate false
-            source ~/.bashrc
-          else
-            echo "Miniconda already installed."
-          fi
-          # Add miniconda3/bin to the GITHUB_PATH for subsequent steps in this job
-          echo "$HOME/miniconda3/bin" >> $GITHUB_PATH
-
-      - name: Setup ros2 build environment
-        shell: bash -l {0}
+          set -euo pipefail
+          venv="$(mktemp -d "$RUNNER_TEMP/autolife-python.XXXXXX")"
+          python -m venv "$venv"
+          echo "$venv/bin" >> "$GITHUB_PATH"
+          echo "VIRTUAL_ENV=$venv" >> "$GITHUB_ENV"
+      - name: Install wheel build dependencies
+        shell: bash
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh
-          conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
-          conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
-          conda update conda -n base -y
-          conda config --env --add channels conda-forge
-
-          conda remove -n ros2_build --all -y
-          conda create -n ros2_build conda-forge::python=3.12.* -y
-          conda activate ros2_build
+          set -euo pipefail
+          command -v cc
+          command -v c++
           python -m pip install --upgrade pip setuptools packaging wheel mypy Cython
-
           python --version
-          which python
           python -c "import sys; print(sys.executable)"
           python -c "import sysconfig; print('Include path:', sysconfig.get_path('include'))"
 
       - name: Build wheel
-        shell: bash -l {0}
+        shell: bash
         env:
           # Pass the run number as an environment variable
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
           set -e  # Exit immediately if any command fails
-          source ~/miniconda3/etc/profile.d/conda.sh
-          conda activate ros2_build
           python setup.py sdist bdist_wheel
 
       - name: Archive production artifacts
