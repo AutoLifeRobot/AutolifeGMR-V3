@@ -44,7 +44,8 @@ ci_ubuntu_native() {
 }
 ci_just() {
     local archive=/tmp/just-1.58.0.tar.gz
-    curl --fail --location --retry 3 --connect-timeout 15 --max-time 120 \
+    curl --fail --location --retry 3 --retry-all-errors --retry-max-time 180 \
+        --connect-timeout 15 --max-time 120 \
         https://github.com/casey/just/releases/download/1.58.0/just-1.58.0-x86_64-unknown-linux-musl.tar.gz -o "$archive"
     echo "4a5cc2f53e6f0f8c59092a6cc38291eb729d46a7dd95d3ae582008881b84931d  $archive" | sha256sum --check -
     tar -xzf "$archive" -C /usr/local/bin just
