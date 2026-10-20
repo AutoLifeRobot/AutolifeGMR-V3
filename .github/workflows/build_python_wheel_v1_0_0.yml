@@ -51,6 +51,6 @@ jobs:
     env:
       CI_MATRIX_INDEX: ${{ strategy.job-index || 0 }}
       CI_SOURCE_REL: .ci/${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-${{ strategy.job-index || 0 }}/source
-      CI_IMAGE: ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
+      CI_IMAGE: m.daocloud.io/docker.io/library/ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
       CI_DOCKER_PLATFORM: linux/amd64
       CI_PYTHON_MINOR: '3.12'

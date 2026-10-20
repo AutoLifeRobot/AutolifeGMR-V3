@@ -16,3 +16,11 @@ fallback or host Python, Conda, Bun, just, gh or apt installation is used.
   Docker daemon must be accessible; container creation failure is not a test PASS.
 - Git LFS is fetched inside Docker for the exact event SHA, then fsck is required.
   A read-only job token is supplied only to that exec and is not stored in outputs.
+
+## Public container image source
+
+Public base images use the DaoCloud accelerator at `m.daocloud.io`, preserving
+the upstream repository, version tag and existing digest. Tags without a digest
+remain tag-based. Its CDN may cross borders; this is not a Mainland-only network
+guarantee. Company GHCR images remain on GHCR, and company credentials must not
+be sent to the accelerator. Package repositories and functional gates are unchanged.
