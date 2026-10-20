@@ -1,7 +1,10 @@
-# Self-hosted CI for AutolifeGMR-V3
+# Docker CI for AutolifeGMR-V3
 
-Linux jobs require explicit `self-hosted` labels and Docker access. No GitHub-hosted
-fallback or host Python, Conda, Bun, just, gh or apt installation is used.
+This public repository is the approved runner exception: every GMR job uses
+GitHub-hosted `ubuntu-24.04`, while dependency installation, tests and packaging
+remain inside the existing job-owned Docker container. Other AutoLife repositories
+keep their self-hosted policy. No host Python, Conda, Bun, just, gh or apt
+installation is used.
 
 - `.github/scripts/ci-container.sh`: unique container and checkout, client-side
   `docker cp`, exact event SHA, bounded cleanup and real exit-status evidence.

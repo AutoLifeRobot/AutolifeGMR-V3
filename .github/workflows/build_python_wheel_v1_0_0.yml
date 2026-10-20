@@ -1,4 +1,4 @@
-# Self-hosted scheduling; all dependency installation and gates run in a job-owned Docker container.
+# Public GMR uses GitHub-hosted Ubuntu; dependencies and gates stay in a job-owned Docker container.
 name: Python Wheel Package
 'on':
   push:
@@ -7,10 +7,7 @@ name: Python Wheel Package
 jobs:
   build-for-x64:
     if: github.event_name == 'push'
-    runs-on:
-      - self-hosted
-      - Linux
-      - X64
+    runs-on: ubuntu-24.04
     steps:
       - name: Prepare isolated job directories
         shell: bash

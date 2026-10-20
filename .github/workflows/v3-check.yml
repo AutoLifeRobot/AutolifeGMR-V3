@@ -1,4 +1,4 @@
-# Self-hosted scheduling; all dependency installation and gates run in a job-owned Docker container.
+# Public GMR uses GitHub-hosted Ubuntu; dependencies and gates stay in a job-owned Docker container.
 name: V3 model source checks
 'on':
   push:
@@ -16,10 +16,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   model:
-    runs-on:
-      - self-hosted
-      - Linux
-      - X64
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Prepare isolated job directories
