@@ -22,8 +22,9 @@ installation is used.
 
 ## Public container image source
 
-Public base images use the DaoCloud accelerator at `m.daocloud.io`, preserving
-the upstream repository, version tag and existing digest. Tags without a digest
-remain tag-based. Its CDN may cross borders; this is not a Mainland-only network
-guarantee. Company GHCR images remain on GHCR, and company credentials must not
-be sent to the accelerator. Package repositories and functional gates are unchanged.
+Public base images are pulled directly from their official registries: Docker Hub
+(`docker.io`) and NVIDIA NGC (`nvcr.io`) where applicable. Repository names, version
+tags and existing digests stay unchanged; tags without a digest remain tag-based.
+Company images stay on GHCR. No public registry proxy or automatic mirror fallback
+is selected by these workflows. Package repositories and functional gates are
+unchanged; registry failures remain failures.
