@@ -28,3 +28,11 @@ tags and existing digests stay unchanged; tags without a digest remain tag-based
 Company images stay on GHCR. No public registry proxy or automatic mirror fallback
 is selected by these workflows. Package repositories and functional gates are
 unchanged; registry failures remain failures.
+
+## Slow-network budgets
+
+CI bootstrap asset downloads allow a 120-second connection, up to 3,600 seconds
+per transfer and a 7,200-second retry window, retaining the original retry count
+and SHA256 checks. Explicit short build/job limits are widened for VPN downloads;
+protocol, device-close, test-hang and owned-resource cleanup deadlines are unchanged.
+A slower download never changes a functional failure into a pass.
