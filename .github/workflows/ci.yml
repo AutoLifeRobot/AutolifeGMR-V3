@@ -39,8 +39,16 @@ jobs:
             await require(path.join(root, 'ci/workflow_policy.cjs')).route({github, context, core, root, mode: 'quick'});
   check:
     needs: route
-    if: needs.route.outputs.quick == 'true'
+    if: needs.route.outputs.quick == 'true' && !(github.event_name == 'push' && github.ref == 'refs/heads/feat/v3-release-iso')
     uses: ./.github/workflows/reusable-full.yml
     secrets: inherit
     with:
       delivery-kind: quick
+  iso-package:
+    needs: route
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/v3-release-iso'
+    uses: ./.github/workflows/reusable-full.yml
+    secrets: inherit
+    with:
+      delivery-kind: development
+      build-number: ${{ format('{0}', github.run_id) }}

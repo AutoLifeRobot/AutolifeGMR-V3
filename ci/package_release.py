@@ -9,6 +9,8 @@ import re
 import subprocess
 import tarfile
 
+from common import development_source
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -47,9 +49,8 @@ def build_identity():
             ref = os.environ.get('GITHUB_REF', '')
             source = os.environ.get('GITHUB_SHA', '')
             development_name = os.environ.get('AUTOLIFE_DEVELOPMENT_NAME', '')
-            if (os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch' or
-                    not ref.startswith('refs/heads/')):
-                raise ValueError('Development packages require a manual branch build')
+            if not development_source(os.environ.get('GITHUB_EVENT_NAME'), ref):
+                raise ValueError('Development requires a manual branch build or an ISO branch push')
             if (not re.fullmatch('[a-f0-9]{40}', source) or len(development_name) > 240 or
                     not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*-\d{8}T\d{9}Z-' + source[:8], development_name)):
                 raise ValueError('Invalid development package name/source identity')

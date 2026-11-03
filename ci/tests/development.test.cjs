@@ -19,3 +19,11 @@ test('branch text cannot escape the artifact filename or workflow output',()=>{
 test('a later manual retry gets a separate downloadable original',()=>{
   assert.notEqual(identity(input).name,identity({...input,attempt:2,date:new Date('2026-10-27T06:07:08.010Z')}).name);
 });
+
+test('only an ISO branch push can build the automatic development original', () => {
+  const iso = {...input, ref:'refs/heads/feat/v3-release-iso', eventName:'push'};
+  assert.equal(identity(iso).branch, 'feat/v3-release-iso');
+  for (const ref of ['refs/heads/main','refs/heads/feat/other','refs/tags/feat/v3-release-iso'])
+    assert.throws(() => identity({...iso,ref}));
+  assert.throws(() => identity({...iso,eventName:'pull_request'}));
+});

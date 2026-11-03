@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import re
 import shutil
-from common import digest, read, require, write
+from common import development_source, digest, read, require, write
 
 
 def seal(directory, lock_path):
@@ -49,9 +49,8 @@ def seal(directory, lock_path):
                         source_event=os.environ['GITHUB_EVENT_NAME'])
     if meta['kind'] == 'development':
         ref = os.environ.get('GITHUB_REF', '')
-        require(os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch' and
-                ref.startswith('refs/heads/') and meta.get('source_ref') == ref,
-                'Development qualification requires the original manual branch run')
+        require(development_source(os.environ.get('GITHUB_EVENT_NAME'), ref) and meta.get('source_ref') == ref,
+                'Development qualification requires the original branch event')
         name = meta.get('development_name', '')
         require(len(name) <= 240 and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*-\d{8}T\d{9}Z-' + meta['source_sha'][:8], name)
                 and originals[0].name == name + '.tar.gz', 'Development original name/source mismatch')
@@ -83,6 +82,11 @@ def seal_publication(directory, lock_path, output):
     require(not output.exists(), 'Publication output must be a fresh directory')
     proof = seal(directory, lock_path)
     files = [entry for entry in proof['files'] if not entry['path'].endswith('.whl')]
+    if proof['delivery']['kind'] == 'development':
+        files = [item for item in files if item['path'].endswith('.tar.gz')]
+        # Match the three-file Development download. The source and consumer reports
+        # were checked above and are retained in the job's build directory.
+        proof['delivery'].update(version=proof['version'], source_event=os.environ['GITHUB_EVENT_NAME'])
     output.mkdir(parents=True, exist_ok=False)
     for entry in files:
         target = output/entry['path']

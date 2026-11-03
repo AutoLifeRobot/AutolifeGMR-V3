@@ -1,8 +1,9 @@
 'use strict';
 // A downloadable development original, never a system channel or formal release.
 function identity({repository, ref, sha, eventName, runId, attempt, date = new Date()}) {
-  if (eventName !== 'workflow_dispatch' || !ref.startsWith('refs/heads/'))
-    throw new Error('Development packaging requires a manual branch run');
+  const isoPush = eventName === 'push' && ref === 'refs/heads/feat/v3-release-iso';
+  if ((!isoPush && eventName !== 'workflow_dispatch') || !ref.startsWith('refs/heads/'))
+    throw new Error('Development packaging requires a manual branch run or an ISO branch push');
   if (!/^[^/]+\/[^/]+$/.test(repository) || !/^[a-f0-9]{40}$/.test(sha) ||
       ![runId, attempt].every(n => /^[1-9][0-9]*$/.test(String(n)) && Number.isSafeInteger(Number(n))) ||
       !(date instanceof Date) || !Number.isFinite(date.getTime()))

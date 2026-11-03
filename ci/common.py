@@ -49,3 +49,8 @@ def verify_archive(archive, destination):
         require(path.stat().st_size == entry['size'] and digest(path) == entry['sha256'],
                 'Archive checksum mismatch: ' + name)
     return package, manifest
+
+
+def development_source(event, ref):
+    return ((event == 'workflow_dispatch' and ref.startswith('refs/heads/'))
+            or (event == 'push' and ref == 'refs/heads/feat/v3-release-iso'))
