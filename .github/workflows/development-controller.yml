@@ -1,0 +1,205 @@
+name: Development controller
+on:
+  workflow_call:
+    inputs:
+      upload:
+        default: true
+        type: boolean
+    secrets:
+      BINARY_ARTIFACTS_TOKEN:
+        required: false
+permissions:
+  contents: read
+  packages: read
+  actions: read
+concurrency:
+  group: gmr-development-${{ github.run_id }}
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: [self-hosted, Linux, X64]
+    outputs:
+      control: ${{ steps.identity.outputs.control }}
+      controller_sha: ${{ steps.controller.outputs.sha }}
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+    steps:
+      - uses: actions/github-script@v7
+        id: controller
+        with:
+          script: |
+            const {data:repo}=await github.rest.repos.get(context.repo);
+            const {data:run}=await github.rest.actions.getWorkflowRun({...context.repo,run_id:context.runId});
+            const prefix=`${repo.full_name}/.github/workflows/development-controller.yml@`;
+            const refs=(run.referenced_workflows || []).filter(r=>r.path.startsWith(prefix) && r.ref===`refs/heads/${repo.default_branch}`);
+            if(refs.length!==1 || !/^[a-f0-9]{40}$/.test(refs[0].sha)) throw new Error('Missing exact default-branch controller reference');
+            core.setOutput('sha',refs[0].sha);
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.controller.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/github-script@v7
+        id: identity
+        env:
+          UPLOAD: ${{ inputs.upload }}
+        with:
+          script: await require('./ci/development-policy.cjs').resolve({github,context,core,component:'gmr',profile:'gmr',upload:process.env.UPLOAD !== 'false'});
+      - uses: actions/upload-artifact@v4
+        with:
+          name: development-control-${{ github.run_id }}-${{ github.run_attempt }}
+          path: development-control.json
+          if-no-files-found: error
+  package:
+    needs: source
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 120
+    outputs:
+      control: ${{ steps.control.outputs.control }}
+      producer_attempt: ${{ steps.control.outputs.producer_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.source.outputs.controller_sha }}
+          path: controller
+          persist-credentials: false
+      - uses: actions/github-script@v7
+        id: control
+        env:
+          CONTROL: ${{ needs.source.outputs.control }}
+        with:
+          script: |
+            core.addPath(require('node:path').dirname(process.execPath));
+            require('./controller/ci/development-policy.cjs').producerControl({control:JSON.parse(process.env.CONTROL),context,core});
+      - uses: actions/upload-artifact@v4
+        with:
+          name: development-producer-control-${{ github.run_id }}-${{ github.run_attempt }}
+          path: producer-control.json
+          if-no-files-found: error
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.source.outputs.source_sha }}
+          path: source
+          lfs: false
+          persist-credentials: false
+      - name: Isolate Docker credentials for this job
+        run: echo "DOCKER_CONFIG=$RUNNER_TEMP/gmr-development-docker-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$GITHUB_JOB" >> "$GITHUB_ENV"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Compile, package and test the original
+        env:
+          GH_TOKEN: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          CONTROL: ${{ steps.control.outputs.control }}
+          AUTOLIFE_LFS_TOKEN: ${{ github.token }}
+        run: |
+          node - <<'JS' > "$RUNNER_TEMP/source-env"
+          const c=JSON.parse(process.env.CONTROL),d=c.delivery;
+          const name=require('./controller/ci/development.cjs').identity({repository:c.repository,ref:d.source_ref,sha:d.source_sha,eventName:'workflow_dispatch',runId:d.run_id,attempt:d.run_attempt}).name;
+          const values={GITHUB_SHA:d.source_sha,GITHUB_REF:d.source_ref,GITHUB_EVENT_NAME:'workflow_dispatch',AUTOLIFE_DELIVERY_KIND:'development',AUTOLIFE_BUILD_NUMBER:String(d.run_id),AUTOLIFE_DEVELOPMENT_NAME:name};
+          for(const [k,v] of Object.entries(values)) console.log(`export ${k}='${v.replace(/'/g,"'\\''")}'`);
+          JS
+          source "$RUNNER_TEMP/source-env"
+          bash controller/ci/docker.sh full "$RUNNER_TEMP/gmr-build" "$GITHUB_WORKSPACE/source"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gmr-development-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gmr-build/artifacts/*
+          if-no-files-found: error
+  verify:
+    needs: [source, package]
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.source.outputs.controller_sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          name: gmr-development-raw-${{ github.run_id }}-${{ needs.package.outputs.producer_attempt }}
+          path: ${{ runner.temp }}/gmr-verify/artifacts
+      - name: Isolate Docker credentials for this job
+        run: echo "DOCKER_CONFIG=$RUNNER_TEMP/gmr-development-docker-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$GITHUB_JOB" >> "$GITHUB_ENV"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Verify installed original with trusted consumer and SDK
+        env:
+          GH_TOKEN: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+        run: bash ci/docker.sh consumer "$RUNNER_TEMP/gmr-verify"
+      - name: Seal original against trusted control
+        env:
+          CONTROL: ${{ needs.package.outputs.control }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          c=json.loads(os.environ['CONTROL']); d=c['delivery']
+          control=Path(os.environ['RUNNER_TEMP'])/'producer-control.json';control.write_text(json.dumps(c))
+          env=dict(os.environ,GITHUB_SHA=d['source_sha'],GITHUB_REF=d['source_ref'],GITHUB_EVENT_NAME='workflow_dispatch',GITHUB_RUN_ATTEMPT=str(d['run_attempt']))
+          root=Path(os.environ['RUNNER_TEMP'])
+          subprocess.run(['python3','ci/development_seal.py',str(root/'gmr-verify/artifacts'),str(control),str(root/'publication')],env=env,check=True)
+          PY
+      - name: Fetch pinned Release import validator
+        uses: actions/checkout@v4
+        with:
+          repository: AutoLifeRobot/AutolifeRelease-V3
+          ref: c8af90f1f573ebaa0112f01d0d3ece495ead4c80
+          path: release-contract-tools
+          token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Verify exact original with Release import contract
+        run: python3 -I ci/release_contract.py --directory "$RUNNER_TEMP/publication" --release-tools release-contract-tools
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gmr-development-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/publication/*
+          if-no-files-found: error
+          retention-days: 30
+  development-full-gate:
+    needs: [source, package, verify]
+    if: always()
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/github-script@v7
+        id: pin
+        name: Validate trusted receipt controller
+        env:
+          CONTROLLER_SHA: ${{ needs.source.outputs.controller_sha }}
+        with:
+          script: |
+            const sha = process.env.CONTROLLER_SHA || '';
+            if (/^[a-f0-9]{40}$/.test(sha)) core.setOutput('sha', sha);
+            else core.setFailed('Missing trusted controller SHA; refusing source-branch checkout');
+      - uses: actions/checkout@v4
+        id: checkout
+        if: steps.pin.outputs.sha != ''
+        with:
+          ref: ${{ steps.pin.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/github-script@v7
+        name: Write inline failure receipt without repository code
+        if: always() && (steps.pin.outputs.sha == '' || steps.checkout.outcome != 'success')
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        with:
+          script: |
+            const needs = JSON.parse(process.env.NEEDS);
+            core.setFailed('Development failed: trusted receipt controller unavailable');
+            await core.summary.addHeading('Development receipt: FAILED')
+              .addRaw('Trusted controller could not be loaded. No repository receipt code was executed.\n')
+              .addTable([['Stage', 'Result'], ...['source', 'package', 'verify'].map(name =>
+                [name, needs[name]?.result || 'missing'])]).write();
+      - uses: actions/github-script@v7
+        name: Write Development result and runner receipt
+        if: always() && steps.pin.outputs.sha != '' && steps.checkout.outcome == 'success'
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        with:
+          script: |
+            await require('./ci/development-receipt.cjs').receipt({github,context,core,
+              needs:JSON.parse(process.env.NEEDS),attempt:Number(process.env.GITHUB_RUN_ATTEMPT)});

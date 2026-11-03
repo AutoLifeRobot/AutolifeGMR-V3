@@ -1,4 +1,5 @@
 """Portable GMR wheel; assets are package resources, not prefix-specific data_files."""
+import os
 from pathlib import Path
 import shutil
 from setuptools import setup, find_packages
@@ -22,7 +23,7 @@ setup(
   long_description_content_type="text/markdown",
   url="https://github.com/YanjieZe/GMR",
   license="MIT",
-  version="0.2.0+autolife.v3",
+  version=os.environ.get("AUTOLIFE_PACKAGE_VERSION", "0.2.0+autolife.v3"),
   install_requires=[
     "loop-rate-limiters", "mink>=1.3,<2", "mujoco>=3.3,<4", "numpy", "scipy",
     "qpsolvers[daqp]>=4,<5", "rich", "torch>=2.6,<3", "imageio", "toml",

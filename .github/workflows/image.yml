@@ -1,0 +1,37 @@
+name: CI Image
+on:
+  push:
+    branches: [main]
+    paths: ['ci/image/**', 'ci/build-requirements.txt', 'ci/inputs.lock.json', '.github/workflows/image.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  image:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 90
+    steps:
+      - name: Isolate registry credentials
+        run: echo "DOCKER_CONFIG=$RUNNER_TEMP/gmr-image-auth-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          path: gmr-image-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish the content-named CI environment
+        working-directory: gmr-image-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          output="$RUNNER_TEMP/gmr-image-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          bash ci/docker.sh image "$output"
+          image="$(cat "$output/image.txt")"
+          docker run --rm --network none "$image" bash -c 'python -m pip check && node --version && python -c "import setuptools, wheel, pytest"'
+          target="ghcr.io/${GITHUB_REPOSITORY,,}-ci:${image#*:}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker tag "$image" "$target"
+          docker push "$target"
+          printf 'GMR CI image: `%s`. No robot channel changed.\n' "$target" >> "$GITHUB_STEP_SUMMARY"

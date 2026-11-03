@@ -1,0 +1,19 @@
+name: Development
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload the verified package to the Release server
+        default: true
+        type: boolean
+permissions:
+  contents: read
+  packages: read
+  actions: read
+jobs:
+  development:
+    uses: AutoLifeRobot/AutolifeGMR-V3/.github/workflows/development-controller.yml@main
+    with:
+      upload: ${{ inputs.upload }}
+    secrets:
+      BINARY_ARTIFACTS_TOKEN: ${{ secrets.BINARY_ARTIFACTS_TOKEN }}

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+python -m unittest discover -s tests -p test_v3_assets.py -v

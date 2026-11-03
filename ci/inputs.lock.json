@@ -1,0 +1,4 @@
+{
+  "schema": "autolife.component-inputs/1",
+  "base_image": "ghcr.io/autoliferobot/autolife-sdk-v3-ci@sha256:9ea59d11e79e234880622c0e632dd39e2a3002b5cf0617f2c1a710c82552b2c9"
+}

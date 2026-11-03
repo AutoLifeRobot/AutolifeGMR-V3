@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft, edited, closed]
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+  packages: read
+  pull-requests: read
+# Current PR state is verified before explicitly cancelling older runs.
+jobs:
+  route:
+    # Only the router cancels obsolete runs; source checks stay read-only.
+    permissions:
+      actions: write
+      contents: read
+      packages: read
+      pull-requests: read
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 15
+    runs-on: [self-hosted, Linux, X64]
+    outputs:
+      quick: ${{ steps.route.outputs.quick }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: devops-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
+          persist-credentials: false
+          lfs: false
+      - uses: actions/github-script@v7
+        id: route
+        with:
+          script: |
+            const path = require('path');
+            const root = path.join(process.env.GITHUB_WORKSPACE, `devops-${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}-${process.env.GITHUB_JOB}`);
+            await require(path.join(root, 'ci/workflow_policy.cjs')).route({github, context, core, root, mode: 'quick'});
+  check:
+    needs: route
+    if: needs.route.outputs.quick == 'true'
+    uses: ./.github/workflows/reusable-full.yml
+    secrets: inherit
+    with:
+      delivery-kind: quick

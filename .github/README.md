@@ -1,38 +1,15 @@
-# Docker CI for AutolifeGMR-V3
+# GMR delivery
 
-This public repository is the approved runner exception: every GMR job uses
-GitHub-hosted `ubuntu-24.04`, while dependency installation, tests and packaging
-remain inside the existing job-owned Docker container. Other AutoLife repositories
-keep their self-hosted policy. No host Python, Conda, Bun, just, gh or apt
-installation is used.
+This repository follows AutolifeFlow-V3 at revision 267a8cf. The Release component ID is `gmr`. The library wheel includes robot XML, meshes and IK configs. The installed check loads the S2 model and steps MuJoCo on CPU. The GMR installation policy stops ChatMotion when replacing its library and declares no GMR service.
 
-- `.github/scripts/ci-container.sh`: unique container and checkout, client-side
-  `docker cp`, exact event SHA, bounded cleanup and real exit-status evidence.
-- `ci-common.sh`: container-only dependency/LFS helpers.
-- `ci-task.sh`: original per-job functional gates and build commands.
-- Checkout uses a run/attempt/job/matrix-specific path. Only that path and the
-  owned container are cleaned; never prune Docker or change a shared environment.
-- Existing dist/test-results artifact names are unchanged. A separate CI evidence
-  artifact records image identity, logs and command/copy/cleanup exit codes.
-- Ubuntu24 native wheels retain their platform checks inside the build container.
-- Ordinary host requirements: Actions runner Node, Bash/coreutils, Git and Docker.
-  Docker daemon must be accessible; container creation failure is not a test PASS.
-- Git LFS is fetched inside Docker for the exact event SHA, then fsck is required.
-  A read-only job token is supplied only to that exec and is not stored in outputs.
+## Build and verify
 
-## Public container image source
+Run `just local-check /tmp/gmr-quick` or `just local-ci /tmp/gmr-full` with a fresh output directory. The self-hosted Linux x64 runner needs Docker and access to the pinned SDK CI image in GHCR. For components using SDK wheels, provide a read-only GitHub token for the locked SDK assets. The source and installed-package tests run offline.
 
-Public base images are pulled directly from their official registries: Docker Hub
-(`docker.io`) and NVIDIA NGC (`nvcr.io`) where applicable. Repository names, version
-tags and existing digests stay unchanged; tags without a digest remain tag-based.
-Company images stay on GHCR. No public registry proxy or automatic mirror fallback
-is selected by these workflows. Package repositories and functional gates are
-unchanged; registry failures remain failures.
+To build the archive directly on Ubuntu 24.04 x86_64 with CPython 3.12 and the build tools installed, run `just package ubuntu24-x64`. `AUTOLIFE_OUTPUT_DIR` can select an empty directory. The tar contains its wheel, a checksummed inventory and Release installation rules.
 
-## Slow-network budgets
+## Branches and publication
 
-CI bootstrap asset downloads allow a 120-second connection, up to 3,600 seconds
-per transfer and a 7,200-second retry window, retaining the original retry count
-and SHA256 checks. Explicit short build/job limits are widened for VPN downloads;
-protocol, device-close, test-hang and owned-resource cleanup deadlines are unchanged.
-A slower download never changes a functional failure into a pass.
+Feature pushes and draft PRs get quick checks. Ready same-repository `candidate/*` PRs to `main` get full qualification. Every main push rebuilds the formal original, publishes a GitHub Pre-release and uploads the verified bytes to the component dev catalog. Manual Development freezes the selected branch SHA and runs an independent installed consumer. Set `upload=false` for artifact-only validation.
+
+The ISO work is prepared on `feat/v3-release-iso`. For remote Development rollout, the default branch must host the trusted controller, and selected branches must have the matching thin Development workflow. These workflows target `main` as the trusted default and formal branch. Configure read access for the pinned SDK image and private Release helper, `BINARY_ARTIFACTS_TOKEN` for private cross-repository reads and a `RELEASE_PUBLISH_KEY` scoped to `component/gmr/dev` for upload. Component owner acceptance and system promotion are separate operations.

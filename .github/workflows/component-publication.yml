@@ -1,0 +1,92 @@
+name: Component publication
+on:
+  workflow_run:
+    workflows: [Development]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: component-publication-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+jobs:
+  policy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'workflow_dispatch'
+    runs-on: [self-hosted, Linux, X64]
+    outputs:
+      upload: ${{ steps.admission.outputs.upload }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/github-script@v7
+        id: admission
+        with:
+          script: |
+            const policy=require('./ci/development-policy.cjs');
+            const plan=await policy.preparePublication({github,context,core,profile:'gmr'});
+            if(plan.upload) await policy.gatePublication({github,context});
+      - name: Publication admission receipt
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          RESULT: ${{ steps.admission.outcome }}
+          UPLOAD: ${{ steps.admission.outputs.upload }}
+        with:
+          script: |
+            core.summary.addHeading(`GMR publication admission: ${process.env.RESULT || 'not started'}`)
+              .addRaw(`\nUpload requested: ${process.env.UPLOAD || 'not admitted'}\n\n`)
+              .addLink('Source Development run',context.payload.workflow_run.html_url);
+            if(process.env.RESULT !== 'success') core.summary.addRaw('\nServer upload did not start. Check the admission step logs.\n');
+            else if(process.env.UPLOAD !== 'true') core.summary.addRaw('\nBuild-only run: no server upload was requested.\n');
+            await core.summary.write();
+  publish:
+    needs: policy
+    if: needs.policy.outputs.upload == 'true'
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/github-script@v7
+        id: input
+        with:
+          script: |
+            const policy=require('./ci/development-policy.cjs');
+            await policy.gatePublication({github,context});
+            await policy.preparePublication({github,context,core,profile:'gmr'});
+      - uses: actions/checkout@v4
+        with:
+          repository: AutoLifeRobot/AutolifeRelease-V3
+          ref: c8af90f1f573ebaa0112f01d0d3ece495ead4c80
+          path: release-tools
+          token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Publish unchanged independent original
+        id: upload
+        if: steps.input.outputs.upload == 'true'
+        env:
+          AUTOLIFE_PUBLISH_URL: ${{ vars.AUTOLIFE_PUBLISH_URL || 'https://robot-release.sz.autolife.ai:8443' }}
+          AUTOLIFE_PUBLISH_TOKEN: ${{ secrets.RELEASE_PUBLISH_KEY }}
+          ORIGINAL: ${{ steps.input.outputs.directory }}
+          IDENTITY: ${{ steps.input.outputs.identity }}
+          ARTIFACT_ID: ${{ steps.input.outputs.artifact_id }}
+        run: |
+          python3 -I release-tools/ci/publish-component.py --component gmr --directory "$ORIGINAL" \
+            --identity "$IDENTITY" --repository-name "$GITHUB_REPOSITORY" --artifact-id "$ARTIFACT_ID" \
+            > "$RUNNER_TEMP/gmr-publication-result.json"
+      - name: Server upload receipt
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          IDENTITY: ${{ steps.input.outputs.identity }}
+          OUTCOME: ${{ steps.upload.outcome }}
+          JOB_STATUS: ${{ job.status }}
+          SERVER: ${{ vars.AUTOLIFE_PUBLISH_URL || 'https://robot-release.sz.autolife.ai:8443' }}
+        with:
+          script: |
+            await require('./ci/publication-receipt.cjs').receipt({core,context,
+              outcome:process.env.OUTCOME,jobStatus:process.env.JOB_STATUS,server:process.env.SERVER,
+              identity:process.env.IDENTITY,result:require('path').join(process.env.RUNNER_TEMP,'gmr-publication-result.json')});

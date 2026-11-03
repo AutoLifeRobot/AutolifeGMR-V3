@@ -1,0 +1,23 @@
+{
+  "schema": "autolife.installation/1",
+  "platform": "ubuntu24-x64",
+  "steps": [
+    {
+      "action": "install_wheels",
+      "source": "wheels",
+      "distributions": [
+        "general-motion-retargeting"
+      ]
+    },
+    {
+      "action": "stop_services",
+      "roles": [
+        "chat-motion"
+      ]
+    },
+    {
+      "action": "refresh_services",
+      "roles": []
+    }
+  ]
+}

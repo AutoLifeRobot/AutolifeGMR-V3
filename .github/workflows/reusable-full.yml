@@ -1,0 +1,135 @@
+name: Reusable / GMR validation
+on:
+  workflow_call:
+    outputs:
+      qualification-artifact:
+        value: ${{ jobs.verify.outputs.qualification-artifact }}
+      qualification-artifact-id:
+        value: ${{ jobs.verify.outputs.qualification-artifact-id }}
+    inputs:
+      delivery-kind:
+        required: true
+        type: string
+      build-number:
+        default: ''
+        type: string
+      head-sha:
+        default: ''
+        type: string
+      head-ref:
+        default: ''
+        type: string
+      base-sha:
+        default: ''
+        type: string
+      pr-number:
+        default: ''
+        type: string
+      artifact-name:
+        default: ''
+        type: string
+permissions:
+  contents: read
+  packages: read
+  pull-requests: read
+jobs:
+  verify:
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 120
+    outputs:
+      qualification-artifact: ${{ steps.identity.outputs.name }}
+      qualification-artifact-id: ${{ steps.original.outputs.artifact-id }}
+    env:
+      AUTOLIFE_DELIVERY_KIND: ${{ inputs.delivery-kind }}
+      AUTOLIFE_BUILD_NUMBER: ${{ inputs.build-number }}
+      AUTOLIFE_DELIVERY_HEAD_SHA: ${{ inputs.head-sha }}
+      AUTOLIFE_DELIVERY_BASE_SHA: ${{ inputs.base-sha }}
+      AUTOLIFE_DELIVERY_PR_NUMBER: ${{ inputs.pr-number }}
+      AUTOLIFE_DELIVERY_HEAD_REF: ${{ inputs.head-ref }}
+      AUTOLIFE_DEVELOPMENT_NAME: ${{ inputs.artifact-name }}
+    steps:
+      - id: identity
+        env:
+          DELIVERY_KIND: ${{ inputs.delivery-kind }}
+          ARTIFACT_NAME: ${{ inputs.artifact-name }}
+        run: |
+          echo "name=${ARTIFACT_NAME:-gmr-${DELIVERY_KIND}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}}" >> "$GITHUB_OUTPUT"
+          echo "COMPONENT_CHECKOUT=gmr-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_JOB}" >> "$GITHUB_ENV"
+          echo "COMPONENT_OUTPUT=$RUNNER_TEMP/gmr-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_JOB}" >> "$GITHUB_ENV"
+          echo "DOCKER_CONFIG=$RUNNER_TEMP/gmr-docker-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_JOB}" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ env.COMPONENT_CHECKOUT }}
+          lfs: false
+          persist-credentials: false
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run the same container entrypoint used locally
+        working-directory: ${{ env.COMPONENT_CHECKOUT }}
+        env:
+          GH_TOKEN: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          AUTOLIFE_LFS_TOKEN: ${{ github.token }}
+          CHECK_MODE: ${{ inputs.delivery-kind == 'quick' && 'quick' || 'full' }}
+        run: bash ci/docker.sh "$CHECK_MODE" "$COMPONENT_OUTPUT"
+      - name: Recheck candidate identity before qualification
+        if: inputs.delivery-kind == 'candidate'
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ inputs.pr-number }}
+        with:
+          script: |
+            const {data: pr} = await github.rest.pulls.get({...context.repo, pull_number: Number(process.env.PR_NUMBER)});
+            if (pr.state !== 'open' || pr.draft || pr.base.ref !== 'main' ||
+                !pr.head.ref.startsWith('candidate/') ||
+                pr.head.repo.full_name !== `${context.repo.owner}/${context.repo.repo}` ||
+                pr.head.sha !== process.env.AUTOLIFE_DELIVERY_HEAD_SHA || pr.base.sha !== process.env.AUTOLIFE_DELIVERY_BASE_SHA)
+              throw new Error('Candidate PR changed during validation');
+      - name: Seal exact validated originals
+        if: inputs.delivery-kind != 'quick'
+        working-directory: ${{ env.COMPONENT_CHECKOUT }}
+        # Sealing is stdlib-only. Reports already bind the tested immutable image;
+        # do not require that runner-local image to survive between job steps.
+        run: python3 ci/seal.py "$COMPONENT_OUTPUT/artifacts" --output "$COMPONENT_OUTPUT/publication"
+      - name: Fetch pinned Release import validator
+        if: inputs.delivery-kind != 'quick'
+        uses: actions/checkout@v4
+        with:
+          repository: AutoLifeRobot/AutolifeRelease-V3
+          ref: c8af90f1f573ebaa0112f01d0d3ece495ead4c80
+          path: release-contract-${{ github.run_id }}-${{ github.run_attempt }}
+          token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Verify exact original with Release import contract
+        if: inputs.delivery-kind != 'quick'
+        run: python3 -I "$COMPONENT_CHECKOUT/ci/release_contract.py" --directory "$COMPONENT_OUTPUT/publication" --release-tools "release-contract-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+      - uses: actions/upload-artifact@v4
+        id: original
+        if: success() && inputs.delivery-kind != 'quick'
+        with:
+          name: ${{ steps.identity.outputs.name }}
+          path: ${{ env.COMPONENT_OUTPUT }}/publication/*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Show development download
+        if: success() && inputs.delivery-kind == 'development'
+        env:
+          ARTIFACT_URL: ${{ steps.original.outputs.artifact-url }}
+          ARTIFACT_NAME: ${{ steps.identity.outputs.name }}
+        run: |
+          printf '### Development package\n\n[%s](%s)\n\n' "$ARTIFACT_NAME" "$ARTIFACT_URL" >> "$GITHUB_STEP_SUMMARY"
+          printf 'Validated original for a local dev composition. No shared dev/latest, alpha or stable was updated. Retained for 30 days.\n\n' >> "$GITHUB_STEP_SUMMARY"
+          printf 'Download the artifact and run `sha256sum -c SHA256SUMS` before use. See project/docs/en/DEV-10-ci.md for local dev composition commands.\n' >> "$GITHUB_STEP_SUMMARY"
+          printf '\n```text\n' >> "$GITHUB_STEP_SUMMARY"
+          cat "$COMPONENT_OUTPUT/publication/SHA256SUMS" >> "$GITHUB_STEP_SUMMARY"
+          printf '```\n' >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain failure reports separately from qualified originals
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gmr-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.COMPONENT_OUTPUT }}/**/*.json
+          if-no-files-found: warn
+          retention-days: 14

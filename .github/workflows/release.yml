@@ -1,0 +1,156 @@
+name: Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  actions: write
+  contents: read
+  packages: read
+  pull-requests: read
+# Per-run concurrency never cancels a different main commit. Publication uses
+# immutable tags. Qualified main originals also enter component dev with formal
+# qualification; system alpha/stable and GitHub latest are never advanced.
+concurrency:
+  group: gmr-formal-${{ github.run_id }}
+  cancel-in-progress: false
+jobs:
+  route:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 15
+    runs-on: [self-hosted, Linux, X64]
+    outputs:
+      quick: ${{ steps.route.outputs.quick }}
+      full: ${{ steps.route.outputs.full }}
+      build-number: ${{ steps.route.outputs.build_number }}
+      head-sha: ${{ steps.route.outputs.head_sha }}
+      base-sha: ${{ steps.route.outputs.base_sha }}
+      release-id: ${{ steps.route.outputs.release_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: devops-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
+          persist-credentials: false
+          lfs: false
+      - uses: actions/github-script@v7
+        id: route
+        with:
+          script: |
+            const path = require('path');
+            const root = path.join(process.env.GITHUB_WORKSPACE, `devops-${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}-${process.env.GITHUB_JOB}`);
+            await require(path.join(root, 'ci/workflow_policy.cjs')).route({github, context, core, root, mode: 'formal'});
+  full:
+    needs: route
+    if: needs.route.outputs.full == 'true'
+    uses: ./.github/workflows/reusable-full.yml
+    secrets: inherit
+    with:
+      delivery-kind: formal
+      build-number: ${{ needs.route.outputs.build-number }}
+      head-sha: ${{ needs.route.outputs.head-sha }}
+      base-sha: ${{ needs.route.outputs.base-sha }}
+  formal-full-gate:
+    needs: [route, full]
+    if: always() && !cancelled() && (needs.route.result != 'success' || needs.route.outputs.full == 'true')
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/github-script@v7
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        with:
+          script: |
+            const needs = JSON.parse(process.env.NEEDS);
+            for (const name of ['route', 'full']) {
+              if (needs[name]?.result !== 'success') core.setFailed(`${name} did not actually succeed`);
+            }
+  publish:
+    needs: [route, full, formal-full-gate]
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: gmr-publish-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          name: ${{ needs.full.outputs.qualification-artifact }}
+          path: ${{ runner.temp }}/gmr-publication-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/github-script@v7
+        env:
+          PUBLICATION_DIR: ${{ runner.temp }}/gmr-publication-${{ github.run_id }}-${{ github.run_attempt }}
+          EXPECTED_BUILD: ${{ needs.route.outputs.build-number }}
+        with:
+          script: |
+            const path = require('path');
+            const root = path.join(process.env.GITHUB_WORKSPACE, `gmr-publish-${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}`);
+            await require(path.join(root, 'ci/publish.cjs')).publish({github, context, directory: process.env.PUBLICATION_DIR});
+  server-policy:
+    needs: [publish]
+    runs-on: [self-hosted, Linux, X64]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/github-script@v7
+        with:
+          script: await require('./ci/development-policy.cjs').gatePublication({github,context});
+  server-publish:
+    needs: [route, full, publish, server-policy]
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Recheck publication policy and exact artifact
+        uses: actions/github-script@v7
+        env:
+          ARTIFACT_ID: ${{ needs.full.outputs.qualification-artifact-id }}
+        with:
+          script: |
+            await require('./ci/development-policy.cjs').gatePublication({github,context});
+            if (!/^[1-9][0-9]*$/.test(process.env.ARTIFACT_ID || '')) throw new Error('Missing exact qualified artifact ID');
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          artifact-ids: ${{ needs.full.outputs.qualification-artifact-id }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/gmr-server-original
+      - uses: actions/checkout@v4
+        with:
+          repository: AutoLifeRobot/AutolifeRelease-V3
+          ref: c8af90f1f573ebaa0112f01d0d3ece495ead4c80
+          path: release-tools
+          token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Publish main Pre-release original to component dev
+        env:
+          EXPECTED_BUILD: ${{ needs.route.outputs.build-number }}
+          AUTOLIFE_PUBLISH_URL: ${{ vars.AUTOLIFE_PUBLISH_URL || 'https://robot-release.sz.autolife.ai:8443' }}
+          AUTOLIFE_PUBLISH_TOKEN: ${{ secrets.RELEASE_PUBLISH_KEY }}
+        run: python3 -I ci/publish_prerelease.py --directory "$RUNNER_TEMP/gmr-server-original" --release-tools release-tools --manifest-output "$RUNNER_TEMP/gmr-acceptance-input/component-manifest.json"
+      - name: Prepare version-bound acceptance materials
+        run: |
+          python3 -I ci/acceptance_materials.py \
+            --manifest "$RUNNER_TEMP/gmr-acceptance-input/component-manifest.json" \
+            --qualification-directory "$RUNNER_TEMP/gmr-server-original" \
+            --output "$RUNNER_TEMP/gmr-acceptance"
+          printf '\n### Component owner acceptance\n\nDownload the gmr-acceptance artifact for the exact version, candidate, manifest digest, software evidence and owner report template. CI has not registered acceptance. The token must have accept plus component/gmr/dev write permission.\n' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gmr-acceptance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gmr-acceptance/*
+          if-no-files-found: error
+          retention-days: 30
