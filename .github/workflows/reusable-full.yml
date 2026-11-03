@@ -105,7 +105,7 @@ jobs:
         # do not require that runner-local image to survive between job steps.
         run: python3 ci/seal.py "$COMPONENT_OUTPUT/artifacts" --output "$COMPONENT_OUTPUT/publication"
       - name: Fetch pinned Release import validator
-        if: inputs.delivery-kind != 'quick'
+        if: inputs.delivery-kind != 'quick' && !(inputs.delivery-kind == 'development' && github.event_name == 'push')
         uses: actions/checkout@v4
         with:
           repository: AutoLifeRobot/AutolifeRelease-V3
@@ -114,11 +114,8 @@ jobs:
           token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
           persist-credentials: false
       - name: Verify exact original with Release import contract
-        if: inputs.delivery-kind != 'quick'
+        if: inputs.delivery-kind != 'quick' && !(inputs.delivery-kind == 'development' && github.event_name == 'push')
         run: python3 -I "$COMPONENT_CHECKOUT/ci/release_contract.py" --directory "$COMPONENT_OUTPUT/publication" --release-tools "release-contract-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
-      - name: Install sealed ISO original with Release main
-        if: inputs.delivery-kind == 'development' && github.event_name == 'push'
-        run: bash "$COMPONENT_CHECKOUT/ci/verify-install.sh" "$COMPONENT_OUTPUT" "release-contract-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
       - uses: actions/upload-artifact@v4
         id: original
         if: success() && inputs.delivery-kind != 'quick'

@@ -308,3 +308,17 @@ test('Candidate and Release export, validate and upload only the final publicati
  assert.match(original,/path: \$\{\{ env.COMPONENT_OUTPUT \}\}\/publication\/\*/);
  assert.doesNotMatch(original,/\/artifacts\//);
 });
+
+test('ISO packages are downloadable without the optional Release integration job',()=>{
+  const fs=require('node:fs'),path=require('node:path');
+  const workflow=fs.readFileSync(path.join(__dirname,'../../.github/workflows/ci.yml'),'utf8');
+  const optional=workflow.split('  release-install:\n')[1];
+  assert.match(optional,/needs: iso-package/);
+  assert.match(optional,/if: vars.ISO_VERIFY_WITH_RELEASE == 'true'/);
+  assert.match(optional,/needs.iso-package.outputs.qualification-artifact-id/);
+  const build=fs.readFileSync(path.join(__dirname,'../../.github/workflows/reusable-full.yml'),'utf8');
+  for(const label of ['Fetch pinned Release import validator','Verify exact original with Release import contract']){
+    const step=build.split('      - name: '+label+'\n')[1].split('\n      - ')[0];
+    assert.match(step,/!\(inputs.delivery-kind == 'development' && github.event_name == 'push'\)/);
+  }
+});

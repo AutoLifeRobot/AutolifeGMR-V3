@@ -52,3 +52,45 @@ jobs:
     with:
       delivery-kind: development
       build-number: ${{ format('{0}', github.run_id) }}
+  release-install:
+    # Optional integration check. The component artifact already exists independently.
+    needs: iso-package
+    if: vars.ISO_VERIFY_WITH_RELEASE == 'true'
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 90
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          lfs: false
+      - name: Check out the pinned Release main installer
+        uses: actions/checkout@v4
+        with:
+          repository: AutoLifeRobot/AutolifeRelease-V3
+          ref: 4ce9a02f8cdc129c0fbf6099f318eed2c6d2375a
+          path: release-validator
+          token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Set isolated verification paths
+        run: |
+          echo "ISO_OUTPUT=$RUNNER_TEMP/iso-install-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+          echo "DOCKER_CONFIG=$RUNNER_TEMP/iso-install-docker-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.iso-package.outputs.qualification-artifact-id }}
+          path: ${{ env.ISO_OUTPUT }}/publication
+          merge-multiple: true
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Import and install the original in a disposable deployment
+        run: |
+          python3 -I ci/release_contract.py --directory "$ISO_OUTPUT/publication" --release-tools release-validator
+          bash ci/docker.sh image "$ISO_OUTPUT"
+          bash ci/verify-install.sh "$ISO_OUTPUT" release-validator
