@@ -60,7 +60,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: AutoLifeRobot/AutolifeRelease-V3
-          ref: c8af90f1f573ebaa0112f01d0d3ece495ead4c80
+          ref: 4ce9a02f8cdc129c0fbf6099f318eed2c6d2375a
           path: release-tools
           token: ${{ secrets.BINARY_ARTIFACTS_TOKEN || github.token }}
           persist-credentials: false
@@ -72,10 +72,9 @@ jobs:
           AUTOLIFE_PUBLISH_TOKEN: ${{ secrets.RELEASE_PUBLISH_KEY }}
           ORIGINAL: ${{ steps.input.outputs.directory }}
           IDENTITY: ${{ steps.input.outputs.identity }}
-          ARTIFACT_ID: ${{ steps.input.outputs.artifact_id }}
         run: |
-          python3 -I release-tools/ci/publish-component.py --component gmr --directory "$ORIGINAL" \
-            --identity "$IDENTITY" --repository-name "$GITHUB_REPOSITORY" --artifact-id "$ARTIFACT_ID" \
+          python3 -I ci/publish_component.py --directory "$ORIGINAL" --release-tools release-tools \
+            --development-control "$IDENTITY" \
             > "$RUNNER_TEMP/gmr-publication-result.json"
       - name: Server upload receipt
         if: always()

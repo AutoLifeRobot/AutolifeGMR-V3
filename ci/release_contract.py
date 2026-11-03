@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tempfile
 
-RELEASE_SHA = 'c8af90f1f573ebaa0112f01d0d3ece495ead4c80'
+RELEASE_SHA = '4ce9a02f8cdc129c0fbf6099f318eed2c6d2375a'
 
 
 def verify(directory, release_tools):
