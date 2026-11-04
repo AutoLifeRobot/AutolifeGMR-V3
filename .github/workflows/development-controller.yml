@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   source:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     outputs:
       control: ${{ steps.identity.outputs.control }}
       controller_sha: ${{ steps.controller.outputs.sha }}
@@ -50,7 +50,7 @@ jobs:
           if-no-files-found: error
   package:
     needs: source
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     outputs:
       control: ${{ steps.control.outputs.control }}
@@ -108,7 +108,7 @@ jobs:
           if-no-files-found: error
   verify:
     needs: [source, package]
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -163,7 +163,7 @@ jobs:
   development-full-gate:
     needs: [source, package, verify]
     if: always()
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/github-script@v7
         id: pin

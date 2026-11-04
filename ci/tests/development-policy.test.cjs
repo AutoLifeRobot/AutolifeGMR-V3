@@ -140,7 +140,7 @@ test('trusted native profiles require exact expanded job names and every actual 
  const bad=plan();bad.profile='network';assert.throws(()=>policy.publicationPlan(bad));
 });
 
-// GMR calls reviewed main control from the selected branch; only self-hosted
+// GMR calls reviewed main control from the selected branch; only GitHub-hosted
 // gates with the exact reusable prefix and an API-verified caller may publish.
 function flowPlan() {
  const p=plan(),c=control({component:'gmr',repository:'Example/GMR'});
@@ -149,14 +149,16 @@ function flowPlan() {
  p.run.head_branch='feature/dev';p.run.head_sha=c.delivery.source_sha;
  p.run.referenced_workflows=[{path:`${c.repository}/.github/workflows/development-controller.yml@${c.control_sha}`,ref:'refs/heads/main',sha:c.control_sha}];
  p.callerBlobs={source:'d'.repeat(40),controller:'d'.repeat(40)};
- p.jobs=p.jobs.filter(j=>j.name!=='check').map(j=>({...j,name:'development / '+j.name,head_sha:p.run.head_sha,labels:['self-hosted','Linux','X64'],runner_group_name:'Default'}));
+ p.jobs=p.jobs.filter(j=>j.name!=='check').map(j=>({...j,name:'development / '+j.name,head_sha:p.run.head_sha,labels:['ubuntu-24.04'],runner_group_name:'GitHub Actions'}));
  p.artifacts[0].name='gmr-development-42-1';return p;
 }
-test('GMR publication requires trusted main control, reviewed caller and every self-hosted gate',()=>{
+test('GMR publication requires trusted main control, reviewed caller and every GitHub-hosted gate',()=>{
  const p=flowPlan();assert.equal(policy.publicationPlan(p).upload,true);
  for(const mutate of [
   p=>p.jobs.find(j=>j.name==='development / verify').conclusion='skipped',
-  p=>p.jobs[0].labels=['ubuntu-24.04'],
+  p=>p.jobs[0].labels=['self-hosted','ubuntu-24.04'],
+  p=>p.jobs[0].labels=['ubuntu-latest'],
+  p=>p.jobs[0].runner_group_name='Default',
   p=>p.run.head_branch='other',p=>p.run.head_sha='e'.repeat(40),
   p=>p.run.referenced_workflows=[],p=>p.run.referenced_workflows[0].ref='refs/heads/feature/dev',
   p=>p.callerBlobs.source='e'.repeat(40),p=>delete p.callerBlobs,
@@ -167,11 +169,14 @@ test('GMR publication requires trusted main control, reviewed caller and every s
  const upload=fs.readFileSync('.github/workflows/component-publication.yml','utf8');
  assert.doesNotMatch(source,/source_branch|RELEASE_PUBLISH_KEY|AUTOLIFE_PUBLISH_TOKEN|secrets: inherit/);
  assert.match(source,/development-controller.yml@main/);
- assert.doesNotMatch(controller,/RELEASE_PUBLISH_KEY|AUTOLIFE_PUBLISH_TOKEN|runs-on: ubuntu/);
+ assert.doesNotMatch(controller,/RELEASE_PUBLISH_KEY|AUTOLIFE_PUBLISH_TOKEN/);
+ assert.match(controller,/runs-on: ubuntu-24\.04/);
+ assert.doesNotMatch(controller,/runs-on: \[self-hosted/);
  assert.match(controller,/bash controller\/ci\/docker.sh full/);
  for(const workflow of [upload,fs.readFileSync('.github/workflows/release.yml','utf8')]) {
   assert.doesNotMatch(workflow,/^\s*environment:|deployments: read/m);assert.match(workflow,/gatePublication/);
  }
- assert.doesNotMatch(upload,/runs-on: ubuntu/);assert.match(upload,/secrets.RELEASE_PUBLISH_KEY/);
+ assert.match(upload,/runs-on: ubuntu-24\.04/);assert.doesNotMatch(upload,/runs-on: \[self-hosted/);
+ assert.match(upload,/secrets.RELEASE_PUBLISH_KEY/);
  assert.match(upload,/profile:'gmr'/);
 });

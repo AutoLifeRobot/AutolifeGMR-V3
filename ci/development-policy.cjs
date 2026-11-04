@@ -169,8 +169,7 @@ function publicationPlan({run,workflow,jobs,artifacts,control,sourceControl,defa
   for (const name of contract.gates) {
     const job=gates[name];
     requireThat(job?.conclusion === 'success' && job.status === 'completed' &&
-      (profile==='gmr' ? ['self-hosted','Linux','X64'].every(label=>job.labels?.includes(label)) :
-        job.labels?.includes('ubuntu-24.04') && !job.labels.includes('self-hosted') && job.runner_group_name === 'GitHub Actions') &&
+      job.labels?.includes('ubuntu-24.04') && !job.labels.includes('self-hosted') && job.runner_group_name === 'GitHub Actions' &&
       job.head_sha === run.head_sha && Number(job.run_id) === Number(run.id), `Required runner gate did not succeed: ${name}`);
   }
   requireThat(sourceControl.delivery.run_attempt === gates.source.run_attempt && contract.gates.every(name=>gates[name].run_attempt>=gates.source.run_attempt) &&

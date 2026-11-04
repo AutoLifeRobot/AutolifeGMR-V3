@@ -4,7 +4,7 @@ This repository follows AutolifeFlow-V3 at revision 267a8cf. The Release compone
 
 ## Build and verify
 
-Run `just local-check /tmp/gmr-quick` or `just local-ci /tmp/gmr-full` with a fresh output directory. The self-hosted Linux x64 runner needs Docker and access to the pinned SDK CI image in GHCR. GMR builds and verifies its library without an SDK release download. The source and installed-package tests run offline.
+Run `just local-check /tmp/gmr-quick` or `just local-ci /tmp/gmr-full` with a fresh output directory. Actions jobs use the standard GitHub-hosted `ubuntu-24.04` x64 runner, whose compute is free while this repository remains public. Local checks need Docker. Both environments need access to the pinned SDK CI toolchain image in GHCR; Actions uses its built-in `GITHUB_TOKEN` with package-read permission. A fresh hosted job downloads the image and Python build dependencies rather than relying on a persistent runner cache. GMR builds and verifies its library without an SDK release download. The source and installed-package tests run offline.
 
 To build the archive directly on Ubuntu 24.04 x86_64 with CPython 3.12 and the build tools installed, run `just package ubuntu24-x64`. `AUTOLIFE_OUTPUT_DIR` can select an empty directory. The tar contains its wheel, a checksummed inventory and Release installation rules.
 

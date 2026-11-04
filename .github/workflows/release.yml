@@ -18,7 +18,7 @@ jobs:
   route:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 15
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     outputs:
       quick: ${{ steps.route.outputs.quick }}
       full: ${{ steps.route.outputs.full }}
@@ -52,7 +52,7 @@ jobs:
   formal-full-gate:
     needs: [route, full]
     if: always() && !cancelled() && (needs.route.result != 'success' || needs.route.outputs.full == 'true')
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/github-script@v7
         env:
@@ -65,7 +65,7 @@ jobs:
             }
   publish:
     needs: [route, full, formal-full-gate]
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: write
@@ -91,7 +91,7 @@ jobs:
             await require(path.join(root, 'ci/publish.cjs')).publish({github, context, directory: process.env.PUBLICATION_DIR});
   server-policy:
     needs: [publish]
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
@@ -104,7 +104,7 @@ jobs:
           script: await require('./ci/development-policy.cjs').gatePublication({github,context});
   server-publish:
     needs: [route, full, publish, server-policy]
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
